@@ -145,62 +145,56 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
           
           {/* Services Mega Menu Trigger */}
           <div
-            style={{ position: 'relative' }}
+            style={{
+              position: 'relative',
+              paddingBottom: '20px',
+              marginBottom: '-20px',
+            }}
             onMouseEnter={() => setActiveMegaMenu('services')}
             onMouseLeave={() => setActiveMegaMenu(null)}
           >
-            <button
+            <Link
+              to="/services"
               className="nav-link"
               style={{
                 ...navLinkStyle(location.pathname.startsWith("/services")),
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.25rem',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
+               
               }}
             >
               Services <ChevronDown size={14} style={{ transform: activeMegaMenu === 'services' ? 'rotate(180deg)' : 'rotate(0)' }} />
-            </button>
+              </Link>
 
             {/* Mega Menu Services Dropdown */}
-            {activeMegaMenu === 'services' && (
-              <div
-                className="glass-card"
-                style={megaMenuStyle}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', width: '800px' }}>
-                  {servicesLinks.map((item, idx) => (
-                    <Link
-                      key={idx}
-                      to={item.path}
-                      style={megaMenuItemStyle}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-                        e.currentTarget.style.borderColor = 'var(--color-medical-blue)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.borderColor = 'transparent';
-                      }}
-                    >
-                      <h4 style={{ fontSize: '0.95rem', color: 'var(--color-medical-blue)', marginBottom: '0.25rem' }}>{item.title}</h4>
-                      <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>{item.desc}</p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div
+              className="glass-card"
+              style={{
+                ...megaMenuStyle,
+                opacity: activeMegaMenu === "services" ? 1 : 0,
+                visibility: activeMegaMenu === "services" ? "visible" : "hidden",
+                pointerEvents: activeMegaMenu === "services" ? "auto" : "none",
+                transform:
+                  activeMegaMenu === "services"
+                    ? "translateX(-50%) translateY(0)"
+                    : "translateX(-50%) translateY(-10px)",
+                transition: "all .25s ease",
+              }}
+            >
           </div>
 
           {/* Products Mega Menu Trigger */}
           <div
-            style={{ position: 'relative' }}
+            style={{
+              position: 'relative',
+              paddingBottom: '20px',
+              marginBottom: '-20px',
+            }}
             onMouseEnter={() => setActiveMegaMenu('products')}
             onMouseLeave={() => setActiveMegaMenu(null)}
           >
-            <button
+<Link to="/products"
               className="nav-link"
               style={{
                 ...navLinkStyle(location.pathname.startsWith("/products")),
@@ -213,36 +207,23 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
               }}
             >
               Products <ChevronDown size={14} style={{ transform: activeMegaMenu === 'products' ? 'rotate(180deg)' : 'rotate(0)' }} />
-            </button>
+              </Link>
 
             {/* Mega Menu Products Dropdown */}
-            {activeMegaMenu === 'products' && (
-              <div
-                className="glass-card"
-                style={megaMenuStyle}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', width: '800px' }}>
-                  {productsLinks.map((item, idx) => (
-                    <Link
-                      key={idx}
-                      to={item.path}
-                      style={megaMenuItemStyle}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-                        e.currentTarget.style.borderColor = 'var(--color-cyan)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.borderColor = 'transparent';
-                      }}
-                    >
-                      <h4 style={{ fontSize: '0.95rem', color: 'var(--color-cyan)', marginBottom: '0.25rem' }}>{item.title}</h4>
-                      <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>{item.desc}</p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div
+              className="glass-card"
+              style={{
+                ...megaMenuStyle,
+                opacity: activeMegaMenu === "products" ? 1 : 0,
+                visibility: activeMegaMenu === "products" ? "visible" : "hidden",
+                pointerEvents: activeMegaMenu === "products" ? "auto" : "none",
+                transform:
+                  activeMegaMenu === "products"
+                    ? "translateX(-50%) translateY(0)"
+                    : "translateX(-50%) translateY(-10px)",
+                transition: "all .25s ease",
+              }}
+            >
           </div>
 
           <Link to="/projects" className="nav-link" style={navLinkStyle(location.pathname === "/projects")}>Projects</Link>
@@ -448,13 +429,12 @@ const mobileLinkStyle: React.CSSProperties = {
 
 const megaMenuStyle: React.CSSProperties = {
   position: 'absolute',
-  top: '100%',
+  top: 'calc(100% - 2px)',
   left: '50%',
   transform: 'translateX(-50%)',
   padding: '1.5rem',
-  marginTop: '1rem',
   display: 'block',
-  zIndex: 1000,
+  zIndex: 9999,
 };
 
 const megaMenuItemStyle: React.CSSProperties = {
