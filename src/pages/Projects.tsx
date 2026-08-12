@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info, MapPin, Calendar, ClipboardList, Check } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Project {
   id: string;
@@ -15,12 +16,117 @@ interface Project {
 }
 
 export const Projects: React.FC = () => {
+  const { t, language } = useLanguage();
   const [filter, setFilter] = useState('All');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  const categories = ["All", "Hospital", "Dental", "Radiology", "Laboratory", "Government", "Commercial"];
+  const categories = language === 'id' 
+    ? ["Semua", "Rumah Sakit", "Gigi", "Radiologi", "Laboratorium", "Pemerintah", "Komersial"]
+    : ["All", "Hospital", "Dental", "Radiology", "Laboratory", "Government", "Commercial"];
 
-  const projectsList: Project[] = [
+  // Handle filter translation mapping
+  const activeFilterCategory = language === 'id' 
+    ? (filter === 'Semua' ? 'All' : ["All", "Hospital", "Dental", "Radiology", "Laboratory", "Government", "Commercial"][categories.indexOf(filter)])
+    : filter;
+
+  const projectsList: Project[] = language === 'id' ? [
+    {
+      id: "proj-1",
+      title: "Perlindungan CT Scan & Cath Lab Tingkat Lanjut",
+      client: "Siloam Hospitals Group",
+      category: "Radiologi",
+      location: "Jakarta Barat, DKI Jakarta",
+      year: "2024",
+      image: "/images/radiation_shielding.png",
+      details: "Eksekusi pelindung radiasi lengkap untuk ruang pemindai CT sumber ganda Siloam yang baru dan canggih. Lembaran pelapis timbal 3mm khusus dan pintu timbal berat otomatis dirancang, dipasang, dan divalidasi.",
+      scope: [
+        "Lapisan lembaran timbal 3.0mm Pb di dalam partisi dinding kering klinis",
+        "Pintu pelindung geser timbal 3.0mm Pb otomatis ganda",
+        "Jendela observasi kaca timbal (1200x800mm, setara 3.0mm Pb)",
+        "Audit validasi kebocoran BAPETEN dan penerbitan lisensi nuklir"
+      ]
+    },
+    {
+      id: "proj-2",
+      title: "Tata Letak Ruang Operasi Jantung Hibrida",
+      client: "RS Jantung Harapan Kita",
+      category: "Rumah Sakit",
+      location: "Jakarta Pusat, DKI Jakarta",
+      year: "2025",
+      image: "/images/hospital_construction.png",
+      details: "Kontrak rancang-bangun untuk Ruang Operasi Hibrida steril (status cleanroom Kelas 10.000). Kerangka suspensi peralatan berat terintegrasi dengan sistem aliran laminar canggih.",
+      scope: [
+        "Kisi-kisi langit-langit filter Laminar Air Flow (LAF) dengan filtrasi HEPA",
+        "Rangka suspensi struktural liontin langit-langit bedah",
+        "Lantai mulus antibakteri dan permukaan dinding yang dapat disanitasi",
+        "Trafo isolasi listrik dan node kontrol UPS darurat"
+      ]
+    },
+    {
+      id: "proj-3",
+      title: "Infrastruktur Laboratorium Diagnostik Cleanroom",
+      client: "Bio Farma Laboratories",
+      category: "Laboratorium",
+      location: "Bandung, Jawa Barat",
+      year: "2024",
+      image: "/images/pass_box.png",
+      details: "Membangun lingkungan penahanan Kelas 1.000 untuk diagnostik virus dan pemrosesan kultur yang sensitif. Membangun batas tekanan untuk menjaga zona klinis tetap steril.",
+      scope: [
+        "Batas penahanan tekanan negatif dan kontrol mekanis",
+        "Kotak masuk cleanroom dinamis dengan gerbang interlock elektronik",
+        "Kabinet medis baja tahan karat SUS 304 dan stasiun pencucian",
+        "Lemari asam pembuangan bahan kimia khusus dan saluran utilitas laboratorium"
+      ]
+    },
+    {
+      id: "proj-4",
+      title: "Perlindungan Klinik Rontgen Gigi Panoramik",
+      client: "Dentia Specialist Dental Center",
+      category: "Gigi",
+      location: "Surabaya, Jawa Timur",
+      year: "2023",
+      image: "/images/medical_equipment.png",
+      details: "Lapisan perlindungan radiasi khusus dan komponen peringatan untuk ruang pencitraan gigi estetika kelas atas.",
+      scope: [
+        "Lapisan lembaran timbal 1.5mm Pb di dalam lembaran dinding kering klinik",
+        "Pintu ayun inti kayu berlapis timbal (setara 1.5mm Pb)",
+        "Indikator LED Peringatan Sinkronisasi ('X-RAY ON') di atas pintu masuk",
+        "Partisi pelindung operator genggam"
+      ]
+    },
+    {
+      id: "proj-5",
+      title: "Pengaturan Fasilitas Isolasi Provinsi",
+      client: "Kementerian Kesehatan (MOH RI)",
+      category: "Pemerintah",
+      location: "Medan, Sumatera Utara",
+      year: "2023",
+      image: "/images/hero_background.png",
+      details: "Rancang-bangun cepat blok bangsal penahanan tekanan positif darurat, dibangun di bawah program pengembangan kesehatan pemerintah.",
+      scope: [
+        "16 ruang pasien klinis mandiri yang dipantau tekanannya",
+        "Instalasi unit penanganan udara segar (AHU) HEPA terpusat",
+        "Pentanahan cadangan listrik tingkat klinis independen",
+        "Jaringan distribusi gas pipa oksigen medis"
+      ]
+    },
+    {
+      id: "proj-6",
+      title: "Ruang Distribusi Steril Farmasi",
+      client: "Kalbe Farma Manufacturing",
+      category: "Komersial",
+      location: "Cikarang, Jawa Barat",
+      year: "2024",
+      image: "/images/scrub_sink.png",
+      details: "Tata letak ruang pengemasan steril bermutu tinggi yang mengintegrasikan kontrol akses elektronik dan stasiun pencucian otomatis.",
+      scope: [
+        "Blok panel dinding antibakteri dan sealant sambungan mulus",
+        "Wastafel cuci SUS 304 yang diaktifkan sensor ganda",
+        "Sistem plafon laminar dengan monitor validasi pertukaran udara",
+        "Kunci akses terintegrasi yang sesuai dengan pedoman GMP yang ketat"
+      ]
+    }
+  ] : [
     {
       id: "proj-1",
       title: "Advanced CT Scan & Cath Lab Shielding",
@@ -119,9 +225,15 @@ export const Projects: React.FC = () => {
     }
   ];
 
-  const filteredProjects = filter === 'All'
+  const filteredProjects = activeFilterCategory === 'All'
     ? projectsList
-    : projectsList.filter(proj => proj.category === filter);
+    : projectsList.filter(proj => {
+        // Map translated category back to English logic for matching
+        const enCategory = language === 'id' 
+          ? ["All", "Hospital", "Dental", "Radiology", "Laboratory", "Government", "Commercial"][["Semua", "Rumah Sakit", "Gigi", "Radiologi", "Laboratorium", "Pemerintah", "Komersial"].indexOf(proj.category)]
+          : proj.category;
+        return enCategory === activeFilterCategory || proj.category === filter;
+      });
 
   return (
     <div style={{ paddingTop: '80px' }}>
@@ -141,13 +253,13 @@ export const Projects: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.25em', fontWeight: 600 }}>
-              PT Berlian Quantum Argado
+              {t('projectsPage.tag')}
             </span>
             <h1 style={{ fontSize: '3rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>
-              Our Completed Projects
+              {t('projectsPage.heading')}
             </h1>
             <p style={{ maxWidth: '750px', color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', lineHeight: '1.6' }}>
-              Explore our record of safety-certified operating theaters, radiation bunkers, and diagnostic suites across Indonesia.
+              {t('projectsPage.desc')}
             </p>
           </motion.div>
         </div>
@@ -176,9 +288,9 @@ export const Projects: React.FC = () => {
                     padding: '0.5rem 1.25rem',
                     borderRadius: 'var(--radius-full)',
                     border: '1px solid',
-                    borderColor: filter === cat ? 'var(--color-medical-blue)' : 'var(--glass-border)',
-                    backgroundColor: filter === cat ? 'var(--color-medical-blue)' : 'transparent',
-                    color: filter === cat ? '#FFFFFF' : 'var(--text-secondary)',
+                    borderColor: filter === cat || (filter === 'All' && cat === 'Semua') ? 'var(--color-medical-blue)' : 'var(--glass-border)',
+                    backgroundColor: filter === cat || (filter === 'All' && cat === 'Semua') ? 'var(--color-medical-blue)' : 'transparent',
+                    color: filter === cat || (filter === 'All' && cat === 'Semua') ? '#FFFFFF' : 'var(--text-secondary)',
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     fontWeight: 600,
@@ -321,11 +433,11 @@ export const Projects: React.FC = () => {
                 {/* Client & Year details */}
                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1.25rem' }}>
                   <div>
-                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block' }}>Client Name</span>
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block' }}>{language === 'id' ? 'Nama Klien' : 'Client Name'}</span>
                     <span style={{ fontWeight: 650, fontSize: '0.95rem' }}>{selectedProject.client}</span>
                   </div>
                   <div>
-                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block' }}>Commission Year</span>
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block' }}>{language === 'id' ? 'Tahun Komisi' : 'Commission Year'}</span>
                     <span style={{ fontWeight: 650, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                       <Calendar size={14} /> {selectedProject.year}
                     </span>
@@ -334,7 +446,7 @@ export const Projects: React.FC = () => {
 
                 <div>
                   <h4 style={{ fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Info size={18} style={{ color: 'var(--color-medical-blue)' }} /> Project Overview
+                    <Info size={18} style={{ color: 'var(--color-medical-blue)' }} /> {language === 'id' ? 'Ringkasan Proyek' : 'Project Overview'}
                   </h4>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
                     {selectedProject.details}
@@ -343,7 +455,7 @@ export const Projects: React.FC = () => {
 
                 <div>
                   <h4 style={{ fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <ClipboardList size={18} style={{ color: 'var(--color-cyan)' }} /> Completed Scope of Work
+                    <ClipboardList size={18} style={{ color: 'var(--color-cyan)' }} /> {language === 'id' ? 'Lingkup Pekerjaan Selesai' : 'Completed Scope of Work'}
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {selectedProject.scope.map((item, idx) => (
@@ -361,7 +473,7 @@ export const Projects: React.FC = () => {
                     className="btn-primary"
                     style={{ padding: '0.85rem 2rem', boxShadow: 'none' }}
                   >
-                    Close Project Details
+                    {language === 'id' ? 'Tutup Detail Proyek' : 'Close Project Details'}
                   </button>
                 </div>
               </div>

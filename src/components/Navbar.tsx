@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Sun, Moon, Menu, X, ChevronDown, Search } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface NavbarProps {
   darkMode: boolean;
@@ -8,6 +9,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
+  const { language, toggleLanguage, t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<'services' | 'products' | null>(null);
@@ -36,7 +38,14 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
 
 
 
-  const servicesLinks = [
+  const servicesLinks = language === 'id' ? [
+    { title: "Perlindungan Radiasi", path: "/services#radiation", desc: "Desain pelindung timbal, rekayasa & perizinan" },
+    { title: "Konstruksi Rumah Sakit", path: "/services#construction", desc: "Ruang radiologi, CT scan, Cath lab & ruang Gigi" },
+    { title: "Sistem HVAC", path: "/services#hvac", desc: "Aliran udara laminar, filtrasi cleanroom & ventilasi khusus" },
+    { title: "Furnitur Medis", path: "/services#furniture", desc: "Meja anti-bakteri, kabinet, dan set ruang kerja klinis" },
+    { title: "Instalasi Peralatan", path: "/services#installation", desc: "Komisioning mekanikal, elektrikal, dan peralatan" },
+    { title: "Pemeliharaan Sistem", path: "/services#maintenance", desc: "Pemeriksaan kebocoran radiasi, validasi & audit preventif" }
+  ] : [
     { title: "Radiation Protection", path: "/services#radiation", desc: "Lead shielding design, engineering & regulatory licensing" },
     { title: "Hospital Construction", path: "/services#construction", desc: "Radiology rooms, CT scans, Cath labs & Dental rooms" },
     { title: "HVAC Systems", path: "/services#hvac", desc: "Laminar air flow, cleanroom filtration & custom ventilation" },
@@ -45,7 +54,14 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
     { title: "System Maintenance", path: "/services#maintenance", desc: "Radiation leak checks, validation & preventative audits" }
   ];
 
-  const productsLinks = [
+  const productsLinks = language === 'id' ? [
+    { title: "Pelindung & Kaca Timbal", path: "/products?cat=Lead%20Sheet", desc: "Lembaran timbal kepadatan tinggi & jendela kaca timbal" },
+    { title: "Pintu Lapis Timbal", path: "/products?cat=Lead%20Door", desc: "Pintu radiasi pengaman manual, geser, dan otomatis" },
+    { title: "Peralatan Cleanroom", path: "/products?cat=Pass%20Box", desc: "Pass box dinamis, scrub sink & kap aliran laminar" },
+    { title: "Finishing Rumah Sakit", path: "/products?cat=Vinyl%20Flooring", desc: "Lantai vinil anti-statis, pelindung dinding & pegangan tangan" },
+    { title: "Sistem Pencahayaan & Daya", path: "/products?cat=Lighting", desc: "Pencahayaan bedah, lampu cleanroom, UPS dan keselamatan listrik" },
+    { title: "Furnitur Laboratorium", path: "/products?cat=Laboratory%20Furniture", desc: "Lemari asam, meja bersih & kabinet stainless" }
+  ] : [
     { title: "Lead Shields & Glass", path: "/products?cat=Lead%20Sheet", desc: "High density lead sheeting & structural lead glass windows" },
     { title: "Lead Shielded Doors", path: "/products?cat=Lead%20Door", desc: "Manual, sliding, and automated safety radiation doors" },
     { title: "Cleanroom Equipment", path: "/products?cat=Pass%20Box", desc: "Dynamic pass boxes, scrub sinks & laminar flow hoods" },
@@ -140,8 +156,8 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
           }}
           className="desktop-nav"
         >
-          <Link to="/" className="nav-link" style={navLinkStyle(location.pathname === "/")}>Home</Link>
-          <Link to="/about" className="nav-link" style={navLinkStyle(location.pathname === "/about")}>About</Link>
+          <Link to="/" className="nav-link" style={navLinkStyle(location.pathname === "/")}>{t('nav.home')}</Link>
+          <Link to="/about" className="nav-link" style={navLinkStyle(location.pathname === "/about")}>{t('nav.about')}</Link>
           
           {/* Services Mega Menu Trigger */}
           <div
@@ -164,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                
               }}
             >
-              Services <ChevronDown size={14} style={{ transform: activeMegaMenu === 'services' ? 'rotate(180deg)' : 'rotate(0)' }} />
+              {t('nav.services')} <ChevronDown size={14} style={{ transform: activeMegaMenu === 'services' ? 'rotate(180deg)' : 'rotate(0)' }} />
               </Link>
 
             {/* Mega Menu Services Dropdown */}
@@ -179,9 +195,9 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                   activeMegaMenu === "services"
                     ? "translateX(-50%) translateY(0)"
                     : "translateX(-50%) translateY(-10px)",
-                transition: "all .25s ease",
               }}
             >
+            </div>
           </div>
 
           {/* Products Mega Menu Trigger */}
@@ -206,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                 cursor: 'pointer',
               }}
             >
-              Products <ChevronDown size={14} style={{ transform: activeMegaMenu === 'products' ? 'rotate(180deg)' : 'rotate(0)' }} />
+              {t('nav.products')} <ChevronDown size={14} style={{ transform: activeMegaMenu === 'products' ? 'rotate(180deg)' : 'rotate(0)' }} />
               </Link>
 
             {/* Mega Menu Products Dropdown */}
@@ -221,14 +237,14 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                   activeMegaMenu === "products"
                     ? "translateX(-50%) translateY(0)"
                     : "translateX(-50%) translateY(-10px)",
-                transition: "all .25s ease",
               }}
             >
+            </div>
           </div>
 
-          <Link to="/projects" className="nav-link" style={navLinkStyle(location.pathname === "/projects")}>Projects</Link>
-          <Link to="/gallery" className="nav-link" style={navLinkStyle(location.pathname === "/gallery")}>Gallery</Link>
-          <Link to="/contact" className="nav-link" style={navLinkStyle(location.pathname === "/contact")}>Contact</Link>
+          <Link to="/projects" className="nav-link" style={navLinkStyle(location.pathname === "/projects")}>{t('nav.projects')}</Link>
+          <Link to="/gallery" className="nav-link" style={navLinkStyle(location.pathname === "/gallery")}>{t('nav.gallery')}</Link>
+          <Link to="/contact" className="nav-link" style={navLinkStyle(location.pathname === "/contact")}>{t('nav.contact')}</Link>
         </div>
 
         {/* Global Toolbar Controls */}
@@ -253,6 +269,43 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
             <Search size={20} />
+          </button>
+
+          {/* Language Toggle */}
+          <button
+            onClick={toggleLanguage}
+            style={{
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--glass-border)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4px',
+              borderRadius: '20px',
+              transition: 'background-color var(--transition-fast)',
+              fontFamily: 'Inter',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              gap: '4px'
+            }}
+            title={language === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
+          >
+            <span style={{ 
+              padding: '4px 8px', 
+              borderRadius: '16px', 
+              backgroundColor: language === 'id' ? 'var(--color-medical-blue)' : 'transparent',
+              color: language === 'id' ? '#FFF' : 'inherit',
+              transition: 'all 0.2s ease'
+            }}>ID</span>
+            <span style={{ 
+              padding: '4px 8px', 
+              borderRadius: '16px', 
+              backgroundColor: language === 'en' ? 'var(--color-medical-blue)' : 'transparent',
+              color: language === 'en' ? '#FFF' : 'inherit',
+              transition: 'all 0.2s ease'
+            }}>EN</span>
           </button>
 
           {/* Dark Mode Toggle */}
@@ -319,7 +372,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
           <div style={{ width: '100%', maxWidth: '800px', display: 'flex', gap: '1rem' }}>
             <input
               type="text"
-              placeholder="Search services, hospital products, shielding specifications..."
+              placeholder={t('nav.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -342,7 +395,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
               className="btn-primary"
               style={{ padding: '0.85rem 2rem' }}
             >
-              Search
+              {t('nav.searchBtn')}
             </button>
           </div>
         </div>
@@ -366,11 +419,11 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
             borderTop: 'none',
           }}
         >
-          <Link to="/" className="mobile-link" style={mobileLinkStyle}>Home</Link>
-          <Link to="/about" className="mobile-link" style={mobileLinkStyle}>About</Link>
+          <Link to="/" className="mobile-link" style={mobileLinkStyle}>{t('nav.home')}</Link>
+          <Link to="/about" className="mobile-link" style={mobileLinkStyle}>{t('nav.about')}</Link>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-medical-blue)' }}>Services</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-medical-blue)' }}>{t('nav.services')}</span>
             <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {servicesLinks.map((item, idx) => (
                 <Link key={idx} to={item.path} style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{item.title}</Link>
@@ -379,7 +432,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-cyan)' }}>Products</span>
+            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-cyan)' }}>{t('nav.products')}</span>
             <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {productsLinks.map((item, idx) => (
                 <Link key={idx} to={item.path} style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{item.title}</Link>
@@ -387,9 +440,9 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
             </div>
           </div>
 
-          <Link to="/projects" className="mobile-link" style={mobileLinkStyle}>Projects</Link>
-          <Link to="/gallery" className="mobile-link" style={mobileLinkStyle}>Gallery</Link>
-          <Link to="/contact" className="mobile-link" style={mobileLinkStyle}>Contact</Link>
+          <Link to="/projects" className="mobile-link" style={mobileLinkStyle}>{t('nav.projects')}</Link>
+          <Link to="/gallery" className="mobile-link" style={mobileLinkStyle}>{t('nav.gallery')}</Link>
+          <Link to="/contact" className="mobile-link" style={mobileLinkStyle}>{t('nav.contact')}</Link>
         </div>
       )}
 
@@ -437,12 +490,4 @@ const megaMenuStyle: React.CSSProperties = {
   zIndex: 9999,
 };
 
-const megaMenuItemStyle: React.CSSProperties = {
-  textDecoration: 'none',
-  padding: '1rem',
-  borderRadius: '12px',
-  border: '1px solid transparent',
-  display: 'flex',
-  flexDirection: 'column',
-  transition: 'all var(--transition-fast)',
-};
+

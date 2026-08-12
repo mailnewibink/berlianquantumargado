@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, ShieldCheck } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -45,30 +47,30 @@ export const Footer: React.FC = () => {
               </div>
             </Link>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-              Pioneering safe medical installations across Indonesia. We construct, engineer, and shield radiation-sensitive spaces to ensure patient and clinician safety.
+              {language === 'id' ? 'Pelopor instalasi medis yang aman di seluruh Indonesia. Kami membangun, merancang, dan melindungi ruang sensitif radiasi untuk memastikan keselamatan pasien dan tenaga medis.' : 'Pioneering safe medical installations across Indonesia. We construct, engineer, and shield radiation-sensitive spaces to ensure patient and clinician safety.'}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-medical-blue)', fontWeight: 600 }}>
               <ShieldCheck size={18} />
-              <span>Certified Radiation Protection Experts</span>
+              <span>{t('footer.shield')}</span>
             </div>
           </div>
 
           {/* Column 2: Navigation Links */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <h4 style={{ fontFamily: 'Manrope', fontSize: '1.1rem', fontWeight: 700 }}>Quick Navigation</h4>
+            <h4 style={{ fontFamily: 'Manrope', fontSize: '1.1rem', fontWeight: 700 }}>{t('footer.navTitle')}</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
-              <Link to="/about" style={footerLinkStyle}>About Our Company</Link>
-              <Link to="/services" style={footerLinkStyle}>Engineering Services</Link>
-              <Link to="/products" style={footerLinkStyle} >Equipment Catalog</Link>
-              <Link to="/projects" style={footerLinkStyle}>Completed Facilities</Link>
-              <Link to="/gallery" style={footerLinkStyle}>Pinterest Gallery</Link>
-              <Link to="/contact" style={footerLinkStyle}>Submit Inquiry</Link>
+              <Link to="/about" style={footerLinkStyle}>{t('nav.about')}</Link>
+              <Link to="/services" style={footerLinkStyle}>{t('nav.services')}</Link>
+              <Link to="/products" style={footerLinkStyle} >{t('nav.products')}</Link>
+              <Link to="/projects" style={footerLinkStyle}>{t('nav.projects')}</Link>
+              <Link to="/gallery" style={footerLinkStyle}>{t('nav.gallery')}</Link>
+              <Link to="/contact" style={footerLinkStyle}>{t('nav.contact')}</Link>
             </div>
           </div>
 
           {/* Column 3: Contact details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <h4 style={{ fontFamily: 'Manrope', fontSize: '1.1rem', fontWeight: 700 }}>Contact Details</h4>
+            <h4 style={{ fontFamily: 'Manrope', fontSize: '1.1rem', fontWeight: 700 }}>{t('footer.contactTitle')}</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                 <MapPin size={20} style={{ color: 'var(--color-medical-blue)', flexShrink: 0, marginTop: '2px' }} />
@@ -91,20 +93,20 @@ export const Footer: React.FC = () => {
 
           {/* Column 4: Operational timings */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <h4 style={{ fontFamily: 'Manrope', fontSize: '1.1rem', fontWeight: 700 }}>Working Hours</h4>
+            <h4 style={{ fontFamily: 'Manrope', fontSize: '1.1rem', fontWeight: 700 }}>{t('footer.hoursTitle')}</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                 <Clock size={20} style={{ color: 'var(--color-cyan)', flexShrink: 0 }} />
                 <div>
-                  <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Monday - Friday</p>
-                  <p style={{ fontSize: '0.85rem' }}>08:00 AM - 05:00 PM (WIB)</p>
+                  <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{language === 'id' ? 'Senin - Jumat' : 'Monday - Friday'}</p>
+                  <p style={{ fontSize: '0.85rem' }}>08:00 - 17:00 (WIB)</p>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                 <Clock size={20} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                 <div>
-                  <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Saturday</p>
-                  <p style={{ fontSize: '0.85rem' }}>08:00 AM - 01:00 PM (Emergency Call Only)</p>
+                  <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{language === 'id' ? 'Sabtu' : 'Saturday'}</p>
+                  <p style={{ fontSize: '0.85rem' }}>{language === 'id' ? '08:00 - 13:00 (Hanya Panggilan Darurat)' : '08:00 AM - 01:00 PM (Emergency Call Only)'}</p>
                 </div>
               </div>
             </div>
@@ -125,11 +127,11 @@ export const Footer: React.FC = () => {
           }}
           className="footer-bottom"
         >
-          <p>© {currentYear} PT Berlian Quantum Argado. All Rights Reserved.</p>
+          <p>© {currentYear} PT Berlian Quantum Argado. {t('footer.copyright')}</p>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>Privacy Policy</a>
-            <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>Terms of Service</a>
-            <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>Radiation Safety Disclaimers</a>
+            <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>{language === 'id' ? 'Kebijakan Privasi' : 'Privacy Policy'}</a>
+            <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>{language === 'id' ? 'Syarat Ketentuan' : 'Terms of Service'}</a>
+            <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>{language === 'id' ? 'Penafian Keselamatan Radiasi' : 'Radiation Safety Disclaimers'}</a>
           </div>
         </div>
       </div>

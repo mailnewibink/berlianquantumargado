@@ -1,89 +1,49 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Hammer, Activity, Sofa, Settings, CheckCircle } from 'lucide-react';
+import { images } from '../content/assets';
+import { serviceItems as serviceItemsData } from '../content/services';
+import type { IconKey } from '../types/content';
+import { useLanguage } from '../contexts/LanguageContext';
+
+const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
+  switch (iconKey) {
+    case 'shield':
+      return <Shield size={28} />;
+    case 'hammer':
+      return <Hammer size={28} />;
+    case 'activity':
+      return <Activity size={28} />;
+    case 'sofa':
+      return <Sofa size={28} />;
+    case 'settings':
+      return <Settings size={28} />;
+    case 'checkCircle':
+      return <CheckCircle size={28} />;
+    default:
+      return <Shield size={28} />;
+  }
+};
+
 
 
 export const Services: React.FC = () => {
-  const serviceItems = [
-    {
-      id: "radiation",
-      image: "/images/radiation_shielding.png",
-      icon: <Shield size={28} />,
-      title: "Radiation Protection & Shielding",
-      desc: "Absolute containment engineering for X-Ray, CT Scan, Cath Lab, and radiotherapy environments.",
-      details: [
-        "High-density lead sheet lining (1.0mm - 4.0mm+ Pb equivalent)",
-        "Automated and manual lead-shielded sliding/swing doors",
-        "Radiation-protective double-glazed lead glass viewports",
-        "BAPETEN licensing consultation and official safety certification support"
-      ]
-    },
-    {
-      id: "construction",
-      image: "/images/hospital_construction.png",
-      icon: <Hammer size={28} />,
-      title: "Specialized Hospital Construction",
-      desc: "Design-build clinical spaces that conform with infection control, acoustics, and structural support demands.",
-      details: [
-        "Turnkey radiology suite and diagnostic department construction",
-        "Sterile zones, Hybrid Operating Theaters and ICU facilities",
-        "RF Shielding installation for Magnetic Resonance Imaging (MRI) rooms",
-        "Anti-static vinyl floor leveling and antimicrobial wall paneling"
-      ]
-    },
-    {
-      id: "hvac",
-      image: "/images/hero_background.png", // Reusing high-quality asset
-      icon: <Activity size={28} />,
-      title: "HVAC & Cleanroom Engineering",
-      desc: "Creating sterile atmospheres via advanced laminar flow air-handling systems.",
-      details: [
-        "Laminar airflow ceilings and HEPA/ULPA filtration grids",
-        "Positive and negative pressure isolation room installations",
-        "Dynamic air change rate (ACH) and temperature/humidity control",
-        "Particle count validation and filter leak scanning"
-      ]
-    },
-    {
-      id: "furniture",
-      image: "/images/scrub_sink.png", // Premium generated scrub sink asset
-      icon: <Sofa size={28} />,
-      title: "Clinical Medical Furniture",
-      desc: "Fabrication of anti-bacterial laboratory furniture and specialized surgical preparation products.",
-      details: [
-        "Automatic sensor-activated medical scrub sinks (1-bay, 2-bay, 3-bay)",
-        "High-grade SUS 304 stainless steel cabinets and instrument tables",
-        "Cleanroom dynamic pass boxes with electronic interlocking doors",
-        "Anti-bacterial workstation countertops and clinical cabinet systems"
-      ]
-    },
-    {
-      id: "installation",
-      image: "/images/medical_equipment.png",
-      icon: <Settings size={28} />,
-      title: "Medical Equipment Installation",
-      desc: "Rigging, anchoring, and commissioning support for heavy diagnostics infrastructure.",
-      details: [
-        "Heavy ceiling-pendant structural suspension frames",
-        "Equipment mounting plates, base anchors, and safety guide rails",
-        "Clinical-grade electrical distribution networks and UPS systems",
-        "Medical gas piping networks (Oxygen, Vacuum, Nitrous Oxide)"
-      ]
-    },
-    {
-      id: "maintenance",
-      image: "/images/pass_box.png", // Reusing dynamic pass box asset
-      icon: <CheckCircle size={28} />,
-      title: "System Maintenance & Safety Audits",
-      desc: "Ensuring long-term structural and environmental parameters are maintained over time.",
-      details: [
-        "Routine radiation leakage testing and shielding integrity audits",
-        "HEPA filter replacement, air flow profiling, and certification",
-        "Emergency repair services for shielded automated doors",
-        "Preventive compliance inspection reports for regulatory audits"
-      ]
-    }
-  ];
+  const { t } = useLanguage();
+  
+  const serviceItems = serviceItemsData.map((item, index) => ({
+    id: item.id,
+    image: images[item.imageKey],
+    icon: getServiceIcon(item.iconKey),
+    title: t(`servicesPage.services.${index}.title`),
+    desc: t(`servicesPage.services.${index}.desc`),
+    details: [
+      t(`servicesPage.services.${index}.details.0`),
+      t(`servicesPage.services.${index}.details.1`),
+      t(`servicesPage.services.${index}.details.2`),
+      t(`servicesPage.services.${index}.details.3`)
+    ].filter(Boolean),
+  }));
+
 
   return (
     <div style={{ paddingTop: '80px' }}>
@@ -102,15 +62,9 @@ export const Services: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.25em', fontWeight: 600 }}>
-              PT Berlian Quantum Argado
-            </span>
-            <h1 style={{ fontSize: '3rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>
-              Engineering & Construction Services
-            </h1>
-            <p style={{ maxWidth: '750px', color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', lineHeight: '1.6' }}>
-              We deliver complete turnkey services from initial safety design to regulatory licensing approval for advanced medical spaces across Indonesia.
-            </p>
+            <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.25em', fontWeight: 600 }}>{t('servicesPage.tag')}</span>
+            <h1 style={{ fontSize: '3rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>{t('servicesPage.heading')}</h1>
+            <p style={{ maxWidth: '750px', color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', lineHeight: '1.6' }}>{t('servicesPage.desc')}</p>
           </motion.div>
         </div>
       </section>
@@ -207,12 +161,8 @@ export const Services: React.FC = () => {
         }}
       >
         <div className="container" style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '2.25rem', fontFamily: 'Manrope', fontWeight: 800, marginBottom: '1.5rem' }}>
-            Built to Rigorous Safety Standards
-          </h2>
-          <p style={{ maxWidth: '650px', margin: '0 auto 3rem auto', color: 'var(--text-secondary)' }}>
-            We guarantee 100% compliance with BAPETEN safety guidelines, Kementerian Kesehatan (MOH) standards, and international medical safety credentials.
-          </p>
+          <h2 style={{ fontSize: '2.25rem', fontFamily: 'Manrope', fontWeight: 800, marginBottom: '1.5rem' }}>{t('servicesPage.qualityHeading')}</h2>
+          <p style={{ maxWidth: '650px', margin: '0 auto 3rem auto', color: 'var(--text-secondary)' }}>{t('servicesPage.qualityDesc')}</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
             <div className="glass-card" style={{ padding: '1.5rem 2.5rem', borderRadius: '16px' }}>
               <span style={{ fontWeight: 700, color: 'var(--color-medical-blue)' }}>BAPETEN Standard Shielding</span>

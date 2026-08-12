@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, MapPin, Clock, MessageSquare, CheckCircle2, ChevronDown } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FaqItem {
   q: string;
@@ -8,6 +9,7 @@ interface FaqItem {
 }
 
 export const Contact: React.FC = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -83,13 +85,13 @@ export const Contact: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.25em', fontWeight: 600 }}>
-              Connect With Us
+              {t('contactPage.tag')}
             </span>
             <h1 style={{ fontSize: '3rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>
-              Project Consultation & Contact
+              {t('contactPage.heading')}
             </h1>
             <p style={{ maxWidth: '750px', color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', lineHeight: '1.6' }}>
-              Have clinical projects or shielding inquiries? Reach out to our design office or consult directly with our PPR engineers.
+              {t('contactPage.desc')}
             </p>
           </motion.div>
         </div>
@@ -102,9 +104,9 @@ export const Contact: React.FC = () => {
             
             {/* Contact details Card List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              <h2 style={{ fontSize: '2rem', fontFamily: 'Manrope', fontWeight: 800 }}>Office Headquarters</h2>
+              <h2 style={{ fontSize: '2rem', fontFamily: 'Manrope', fontWeight: 800 }}>{t('contactPage.hq')}</h2>
               <p style={{ color: 'var(--text-secondary)' }}>
-                Consult with our engineering representatives at our corporate headquarters in Jakarta.
+                {t('contactPage.hqDesc')}
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -173,10 +175,10 @@ export const Contact: React.FC = () => {
                 }}
               >
                 <h4 style={{ fontSize: '1.15rem', color: '#16A34A', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <MessageSquare size={22} /> Speed Consultation
+                  <MessageSquare size={22} /> {t('contactPage.speedConsult')}
                 </h4>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-                  Need an urgent price quote or have bidding requirements? Skip the email and talk directly with our lead planner.
+                  {t('contactPage.speedDesc')}
                 </p>
                 <a
                   href={waLink}
@@ -196,7 +198,7 @@ export const Contact: React.FC = () => {
             {/* Inquiry Form */}
             <div className="glass-card" style={{ padding: '3rem' }}>
               <h2 style={{ fontSize: '2rem', fontFamily: 'Manrope', fontWeight: 800, marginBottom: '1.5rem' }}>
-                Inquiry Submission
+                {t('contactPage.formHeading')}
               </h2>
 
               <AnimatePresence>
@@ -215,9 +217,9 @@ export const Contact: React.FC = () => {
                     }}
                   >
                     <CheckCircle2 size={56} style={{ color: 'var(--color-success)' }} />
-                    <h3 style={{ fontSize: '1.5rem', fontFamily: 'Manrope' }}>Form Submitted Successfully</h3>
+                    <h3 style={{ fontSize: '1.5rem', fontFamily: 'Manrope' }}>{t('contactPage.formSuccess')}</h3>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                      Thank you for contacting PT Berlian Quantum Argado. An engineering representative will review your project parameters and respond within 24 business hours.
+                      {t('contactPage.formSuccessDesc')}
                     </p>
                     <button
                       onClick={() => setSubmitted(false)}
@@ -231,14 +233,14 @@ export const Contact: React.FC = () => {
                         marginTop: '1rem',
                       }}
                     >
-                      Submit Another Request
+                      {t('contactPage.formAnother')}
                     </button>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }} className="form-grid">
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Your Name</label>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t('contactPage.labelName')}</label>
                         <input
                           type="text"
                           name="name"
@@ -249,7 +251,7 @@ export const Contact: React.FC = () => {
                         />
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Email Address</label>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t('contactPage.labelEmail')}</label>
                         <input
                           type="email"
                           name="email"
@@ -263,7 +265,7 @@ export const Contact: React.FC = () => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }} className="form-grid">
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Phone / WhatsApp</label>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t('contactPage.labelPhone')}</label>
                         <input
                           type="tel"
                           name="phone"
@@ -274,7 +276,7 @@ export const Contact: React.FC = () => {
                         />
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Hospital / Institution</label>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t('contactPage.labelHospital')}</label>
                         <input
                           type="text"
                           name="company"
@@ -286,7 +288,7 @@ export const Contact: React.FC = () => {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Project Focus Area</label>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t('contactPage.labelFocus')}</label>
                       <select
                         name="projectType"
                         value={formData.projectType}
@@ -302,12 +304,12 @@ export const Contact: React.FC = () => {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Message & Technical Specs</label>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>{t('contactPage.labelMessage')}</label>
                       <textarea
                         name="message"
                         rows={5}
                         required
-                        placeholder="Detail your equipment models, room sizes, lead equivalents (mm Pb) or specific requirements..."
+                        placeholder={t('contactPage.placeholderMsg')}
                         value={formData.message}
                         onChange={handleInputChange}
                         style={{
@@ -319,7 +321,7 @@ export const Contact: React.FC = () => {
                     </div>
 
                     <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }}>
-                      Submit Inquiry Sheet
+                      {t('contactPage.submitBtn')}
                     </button>
                   </form>
                 )}
@@ -365,10 +367,10 @@ export const Contact: React.FC = () => {
             }}
           >
             <h4 style={{ fontFamily: 'Manrope', fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-medical-blue)', marginBottom: '0.25rem' }}>
-              Jakarta Office Location Map
+              {t('contactPage.mapTitle')}
             </h4>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Interactive Google Map Loader. (Latitude: -6.151239, Longitude: 106.894102)
+              {t('contactPage.mapDesc')}
             </p>
           </div>
         </div>

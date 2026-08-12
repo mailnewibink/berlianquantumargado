@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lightbox } from '../components/Lightbox';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface GalleryItem {
   url: string;
@@ -9,49 +10,28 @@ interface GalleryItem {
 }
 
 export const Gallery: React.FC = () => {
+  const { t, language } = useLanguage();
+
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const galleryItems: GalleryItem[] = [
-    {
-      url: "/images/hero_background.png",
-      title: "Cleanroom Surgical Corridor Layout",
-      category: "Hospital"
-    },
-    {
-      url: "/images/radiation_shielding.png",
-      title: "Lead Shielded Viewing Window & Console",
-      category: "Radiology"
-    },
-    {
-      url: "/images/hospital_construction.png",
-      title: "Surgical Suite Ceiling Frame Structure",
-      category: "Construction"
-    },
-    {
-      url: "/images/medical_equipment.png",
-      title: "Integrated Double Dome Surgical Lights",
-      category: "Equipment"
-    },
-    {
-      url: "/images/scrub_sink.png",
-      title: "Premium Stainless Steel Scrub Station",
-      category: "Laboratory"
-    },
-    {
-      url: "/images/pass_box.png",
-      title: "Sterile Cleanroom Interlock Pass Box",
-      category: "Laboratory"
-    },
-    {
-      url: "/images/hospital_construction.png", // Reuse high-res construction asset
-      title: "Exposed Laminar Ceiling Filtration Unit",
-      category: "Construction"
-    },
-    {
-      url: "/images/radiation_shielding.png", // Reuse high-res shielding asset
-      title: "Shielded Lead Door Frame Boundary",
-      category: "Radiology"
-    }
+  const galleryItems: GalleryItem[] = language === 'id' ? [
+    { url: "/images/hero_background.png", title: "Tata Letak Koridor Bedah Cleanroom", category: "Rumah Sakit" },
+    { url: "/images/radiation_shielding.png", title: "Jendela & Konsol Tinjau Berlapis Timbal", category: "Radiologi" },
+    { url: "/images/hospital_construction.png", title: "Struktur Rangka Plafon Ruang Bedah", category: "Konstruksi" },
+    { url: "/images/medical_equipment.png", title: "Lampu Bedah Kubah Ganda Terintegrasi", category: "Peralatan" },
+    { url: "/images/scrub_sink.png", title: "Stasiun Cuci Baja Tahan Karat Premium", category: "Laboratorium" },
+    { url: "/images/pass_box.png", title: "Pass Box Interlock Cleanroom Steril", category: "Laboratorium" },
+    { url: "/images/hospital_construction.png", title: "Unit Filtrasi Plafon Laminar Terekspos", category: "Konstruksi" },
+    { url: "/images/radiation_shielding.png", title: "Batas Rangka Pintu Timbal Pelindung", category: "Radiologi" }
+  ] : [
+    { url: "/images/hero_background.png", title: "Cleanroom Surgical Corridor Layout", category: "Hospital" },
+    { url: "/images/radiation_shielding.png", title: "Lead Shielded Viewing Window & Console", category: "Radiology" },
+    { url: "/images/hospital_construction.png", title: "Surgical Suite Ceiling Frame Structure", category: "Construction" },
+    { url: "/images/medical_equipment.png", title: "Integrated Double Dome Surgical Lights", category: "Equipment" },
+    { url: "/images/scrub_sink.png", title: "Premium Stainless Steel Scrub Station", category: "Laboratory" },
+    { url: "/images/pass_box.png", title: "Sterile Cleanroom Interlock Pass Box", category: "Laboratory" },
+    { url: "/images/hospital_construction.png", title: "Exposed Laminar Ceiling Filtration Unit", category: "Construction" },
+    { url: "/images/radiation_shielding.png", title: "Shielded Lead Door Frame Boundary", category: "Radiology" }
   ];
 
   const handlePrev = () => {
@@ -83,15 +63,9 @@ export const Gallery: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.25em', fontWeight: 600 }}>
-              PT Berlian Quantum Argado
-            </span>
-            <h1 style={{ fontSize: '3rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>
-              Photo Gallery
-            </h1>
-            <p style={{ maxWidth: '750px', color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', lineHeight: '1.6' }}>
-              Inspect detailed close-up photography of our lead shielding structures, dynamic pass boxes, scrub sinks, and cleanroom ceiling matrices.
-            </p>
+            <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.25em', fontWeight: 600 }}>{t('galleryPage.tag')}</span>
+            <h1 style={{ fontSize: '3rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>{t('galleryPage.heading')}</h1>
+            <p style={{ maxWidth: '750px', color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', lineHeight: '1.6' }}>{t('galleryPage.desc')}</p>
           </motion.div>
         </div>
       </section>

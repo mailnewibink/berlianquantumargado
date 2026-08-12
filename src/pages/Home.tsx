@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, Activity, Hammer, Settings, Sofa, CheckCircle2, Award, Users, Globe, ChevronDown } from 'lucide-react';
 import { InteractiveCard } from '../components/InteractiveCard';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Animated Counter Sub-component
 const AnimatedCounter: React.FC<{ value: number; suffix?: string; label: string }> = ({ value, suffix = "", label }) => {
@@ -42,6 +43,7 @@ const AnimatedCounter: React.FC<{ value: number; suffix?: string; label: string 
 };
 
 export const Home: React.FC = () => {
+  const { t, language } = useLanguage();
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
@@ -49,94 +51,79 @@ export const Home: React.FC = () => {
   const expertiseList = [
     {
       icon: <Shield size={32} className="text-blue" />,
-      title: "Radiation Protection",
-      desc: "Comprehensive lead lining, lead glass viewport shielding, and specialized doors meeting strict BAPETEN regulatory standards.",
+      title: t('expertise.radiation.title'),
+      desc: t('expertise.radiation.desc'),
       delay: 0.1
     },
     {
       icon: <Hammer size={32} className="text-cyan" />,
-      title: "Hospital Construction",
-      desc: "Turnkey design-and-build services for hybrid operating theatres, sterile zones, ICU, and clinical departments.",
+      title: t('expertise.construction.title'),
+      desc: t('expertise.construction.desc'),
       delay: 0.2
     },
     {
       icon: <Settings size={32} className="text-blue" />,
-      title: "Medical Equipment Installation",
-      desc: "Precision anchoring, structural support, mechanical systems interface, and calibration for CT scans, MRI, and Cath labs.",
+      title: t('expertise.equipment.title'),
+      desc: t('expertise.equipment.desc'),
       delay: 0.3
     },
     {
       icon: <Activity size={32} className="text-cyan" />,
-      title: "HVAC & Cleanrooms",
-      desc: "Laminar airflow, HEPA/ULPA filtration, negative-pressure isolation, and temperature-humidity regulation.",
+      title: t('expertise.hvac.title'),
+      desc: t('expertise.hvac.desc'),
       delay: 0.4
     },
     {
       icon: <Sofa size={32} className="text-blue" />,
-      title: "Medical Furniture",
-      desc: "High durability, anti-bacterial stainless steel surgical tables, scrub stations, and custom cabinetry solutions.",
+      title: t('expertise.furniture.title'),
+      desc: t('expertise.furniture.desc'),
       delay: 0.5
     },
     {
       icon: <CheckCircle2 size={32} className="text-cyan" />,
-      title: "Healthcare Engineering",
-      desc: "Medical gas pipeline integration, safety grounding networks, emergency UPS systems, and smart control panels.",
+      title: t('expertise.engineering.title'),
+      desc: t('expertise.engineering.desc'),
       delay: 0.6
     }
   ];
 
-  const featuredProjects = [
-    {
-      image: "/images/radiation_shielding.png",
-      title: "Advanced CT Scan & Radiology Room",
-      category: "Radiation Shielding",
-      location: "Siloam Hospital, Jakarta"
-    },
-    {
-      image: "/images/hospital_construction.png",
-      title: "Hybrid Cardiac Cath Lab Construction",
-      category: "Hospital Construction",
-      location: "Rumah Sakit Harapan Kita, Jakarta"
-    },
-    {
-      image: "/images/medical_equipment.png",
-      title: "Operating Theater Equipment Setup",
-      category: "Medical Installation",
-      location: "RSUD Dr. Soetomo, Surabaya"
-    }
-  ];
+  const featuredProjects = language === 'id' ? [
+      { image: "/images/radiation_shielding.png", title: "CT Scan Canggih & Ruang Radiologi", category: "Pelindung Radiasi", location: "Siloam Hospital, Jakarta" },
+      { image: "/images/hospital_construction.png", title: "Konstruksi Cath Lab Jantung Hibrida", category: "Konstruksi Rumah Sakit", location: "Rumah Sakit Harapan Kita, Jakarta" },
+      { image: "/images/medical_equipment.png", title: "Pengaturan Peralatan Ruang Operasi", category: "Instalasi Medis", location: "RSUD Dr. Soetomo, Surabaya" }
+    ] : [
+      { image: "/images/radiation_shielding.png", title: "Advanced CT Scan & Radiology Room", category: "Radiation Shielding", location: "Siloam Hospital, Jakarta" },
+      { image: "/images/hospital_construction.png", title: "Hybrid Cardiac Cath Lab Construction", category: "Hospital Construction", location: "Rumah Sakit Harapan Kita, Jakarta" },
+      { image: "/images/medical_equipment.png", title: "Operating Theater Equipment Setup", category: "Medical Installation", location: "RSUD Dr. Soetomo, Surabaya" }
+    ];
 
-  const chooseUsCards = [
-    {
-      icon: <Award size={36} style={{ color: 'var(--color-medical-blue)' }} />,
-      title: "Certified Quality",
-      desc: "Full conformance with ISO 9001, ISO 13485 (Medical Devices), and nuclear regulatory body (BAPETEN) permissions."
-    },
-    {
-      icon: <Users size={36} style={{ color: 'var(--color-cyan)' }} />,
-      title: "Professional Team",
-      desc: "Staffed by certified radiation protection officers (PPR), mechanical/electrical specialists, and clinical space planners."
-    },
-    {
-      icon: <Globe size={36} style={{ color: 'var(--color-medical-blue)' }} />,
-      title: "Nationwide Service",
-      desc: "Successful project implementation across major islands of Indonesia, from Sumatra to Papua."
-    },
-    {
-      icon: <Activity size={36} style={{ color: 'var(--color-cyan)' }} />,
-      title: "Engineering Excellence",
-      desc: "Combining physical structural safety with clinical layouts that optimize medical workflows and infection control."
-    }
-  ];
+  const chooseUsCards = language === 'id' ? [
+      { icon: <Award size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Kualitas Tersertifikasi", desc: "Kesesuaian penuh dengan izin ISO 9001, ISO 13485 (Alat Kesehatan), dan badan pengawas nuklir (BAPETEN)." },
+      { icon: <Users size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Tim Profesional", desc: "Dikelola oleh petugas proteksi radiasi (PPR) bersertifikat, spesialis mekanikal/elektrikal, dan perencana ruang klinis." },
+      { icon: <Globe size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Layanan Nasional", desc: "Implementasi proyek yang sukses di seluruh pulau-pulau besar di Indonesia, dari Sumatera hingga Papua." },
+      { icon: <Activity size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Keunggulan Rekayasa", desc: "Menggabungkan keselamatan struktural fisik dengan tata letak klinis yang mengoptimalkan alur kerja medis dan pengendalian infeksi." }
+    ] : [
+      { icon: <Award size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Certified Quality", desc: "Full conformance with ISO 9001, ISO 13485 (Medical Devices), and nuclear regulatory body (BAPETEN) permissions." },
+      { icon: <Users size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Professional Team", desc: "Staffed by certified radiation protection officers (PPR), mechanical/electrical specialists, and clinical space planners." },
+      { icon: <Globe size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Nationwide Service", desc: "Successful project implementation across major islands of Indonesia, from Sumatra to Papua." },
+      { icon: <Activity size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Engineering Excellence", desc: "Combining physical structural safety with clinical layouts that optimize medical workflows and infection control." }
+    ];
 
-  const industries = [
-    "Hospitals (Tipe A & B)",
-    "Specialized Medical Clinics",
-    "Diagnostic Laboratories",
-    "Government Health Ministries",
-    "University Medical Centers",
-    "Radiology & Imaging Hubs"
-  ];
+  const industries = language === 'id' ? [
+      "Rumah Sakit (Tipe A & B)",
+      "Klinik Medis Khusus",
+      "Laboratorium Diagnostik",
+      "Kementerian Kesehatan",
+      "Pusat Medis Universitas",
+      "Pusat Radiologi & Pencitraan"
+    ] : [
+      "Hospitals (Tipe A & B)",
+      "Specialized Medical Clinics",
+      "Diagnostic Laboratories",
+      "Government Health Ministries",
+      "University Medical Centers",
+      "Radiology & Imaging Hubs"
+    ];
 
   return (
     <div style={{ position: 'relative' }}>
@@ -210,9 +197,8 @@ export const Home: React.FC = () => {
                 marginBottom: '1.5rem',
                 color: '#FFFFFF',
               }}
-            >
-              Engineering <span style={{ color: 'var(--color-cyan)' }}>Safer</span> Healthcare Facilities
-            </h1>
+              dangerouslySetInnerHTML={{ __html: t('hero.title').replace('Safer', '<span style="color: var(--color-cyan)">Safer</span>').replace('Lebih Aman', '<span style="color: var(--color-cyan)">Lebih Aman</span>') }}
+            />
             <p
               style={{
                 fontSize: 'clamp(1rem, 2vw, 1.25rem)',
@@ -223,15 +209,15 @@ export const Home: React.FC = () => {
                 maxWidth: '650px',
               }}
             >
-              Integrated Healthcare Engineering, Certified Radiation Protection, Hospital Infrastructure, and Advanced Medical Equipment Solutions.
+              {t('hero.subtitle')}
             </p>
 
             <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
               <Link to="/services" className="btn-primary" style={{ fontSize: '1rem' }}>
-                Explore Services <ArrowRight size={18} />
+                {t('hero.ctaServices')} <ArrowRight size={18} />
               </Link>
               <Link to="/contact" className="btn-secondary" style={{ fontSize: '1rem', color: '#FFFFFF', borderColor: '#FFFFFF' }}>
-                Contact Us
+                {t('hero.ctaContact')}
               </Link>
             </div>
           </motion.div>
@@ -255,7 +241,7 @@ export const Home: React.FC = () => {
             textTransform: 'uppercase',
           }}
         >
-          <span>Scroll</span>
+          <span>{t('hero.scroll')}</span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
@@ -295,20 +281,20 @@ export const Home: React.FC = () => {
               style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
             >
               <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.2em', fontWeight: 600 }}>
-                About Our Company
+                {t('about.tag')}
               </span>
               <h2 style={{ fontSize: '2.5rem', fontFamily: 'Manrope', fontWeight: 800 }}>
-                High-Performance Infrastructure for Modern Medicine
+                {t('about.heading')}
               </h2>
               <p>
-                PT Berlian Quantum Argado is an Indonesian engineering powerhouse specializing in the construction, safety integration, and setup of advanced clinical environments. From high-grade radiation-shielded bunker rooms to sterile positive-pressure operating theaters, we engineer solutions where precision saves lives.
+                {t('about.desc1')}
               </p>
               <p>
-                We collaborate directly with hospitals, architects, and clinicians to translate medical equipment specifications into fully compliant, structural engineering achievements.
+                {t('about.desc2')}
               </p>
               <div>
                 <Link to="/about" className="btn-secondary">
-                  Read Company Story
+                  {t('about.btn')}
                 </Link>
               </div>
             </motion.div>
@@ -321,13 +307,13 @@ export const Home: React.FC = () => {
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-cyan)', letterSpacing: '0.2em', fontWeight: 600 }}>
-              Specialized Divisions
+              {t('expertise.tag')}
             </span>
             <h2 style={{ fontSize: '2.5rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>
-              Healthcare Engineering Expertise
+              {t('expertise.heading')}
             </h2>
             <p style={{ maxWidth: '600px', margin: '1rem auto 0 auto', color: 'var(--text-secondary)' }}>
-              Comprehensive infrastructure, protection system components, and medical environment construction.
+              {t('expertise.subheading')}
             </p>
           </div>
 
@@ -379,9 +365,7 @@ export const Home: React.FC = () => {
               <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-medical-blue)', letterSpacing: '0.2em', fontWeight: 600 }}>
                 Operations
               </span>
-              <h2 style={{ fontSize: '2.5rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>
-                Featured Projects
-              </h2>
+              <h2 style={{ fontSize: '2.5rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem' }}>{language === 'id' ? 'Proyek Unggulan' : 'Featured Projects'}</h2>
             </div>
             <Link to="/projects" className="btn-secondary" style={{ padding: '0.75rem 1.75rem' }}>
               View All Facilities
@@ -498,10 +482,10 @@ export const Home: React.FC = () => {
         />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem' }}>
-            <AnimatedCounter value={120} suffix="+" label="PROJECTS COMPLETED" />
-            <AnimatedCounter value={45} suffix="+" label="HEALTHCARE CLIENTS" />
-            <AnimatedCounter value={10} suffix="+" label="YEARS OF EXCELLENCE" />
-            <AnimatedCounter value={18} suffix="+" label="INDONESIAN CITIES" />
+            <AnimatedCounter value={120} suffix="+" label={t('stats.projects')} />
+            <AnimatedCounter value={45} suffix="+" label={t('stats.clients')} />
+            <AnimatedCounter value={10} suffix="+" label={t('stats.years')} />
+            <AnimatedCounter value={18} suffix="+" label={t('stats.cities')} />
           </div>
         </div>
       </section>
@@ -512,13 +496,13 @@ export const Home: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'center' }}>
             <div>
               <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--color-cyan)', letterSpacing: '0.2em', fontWeight: 600 }}>
-                Sectors
+                {t('sectors.tag')}
               </span>
               <h2 style={{ fontSize: '2.5rem', fontFamily: 'Manrope', fontWeight: 800, marginTop: '0.5rem', marginBottom: '1.5rem' }}>
-                Industries We Serve
+                {t('sectors.heading')}
               </h2>
               <p style={{ color: 'var(--text-secondary)' }}>
-                We deliver robust shielding engineering, specialized cabinetry setups, and mechanical compliance layouts across diverse institutional frameworks.
+                {t('sectors.desc')}
               </p>
             </div>
 
@@ -560,17 +544,17 @@ export const Home: React.FC = () => {
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}
           >
             <h2 style={{ fontSize: '2.5rem', fontFamily: 'Manrope', fontWeight: 800, maxWidth: '750px', lineHeight: '1.3' }}>
-              Let's Build Better, Safer Healthcare Facilities Together
+              {t('ctaBanner.heading')}
             </h2>
             <p style={{ maxWidth: '600px', color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
-              Consult with our radiation experts and mechanical engineering teams to structure your hospital project successfully.
+              {t('ctaBanner.desc')}
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Link to="/contact" className="btn-primary" style={{ padding: '1rem 2.5rem' }}>
-                Consult Our Engineers
+                {t('ctaBanner.btnConsult')}
               </Link>
               <Link to="/products" className="btn-secondary" style={{ padding: '1rem 2.5rem' }}>
-                Browse Safety Products
+                {t('ctaBanner.btnBrowse')}
               </Link>
             </div>
           </motion.div>
