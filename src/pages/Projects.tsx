@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info, MapPin, Calendar, ClipboardList, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface Project {
   id: string;
@@ -19,6 +20,31 @@ export const Projects: React.FC = () => {
   const { t, language } = useLanguage();
   const [filter, setFilter] = useState('All');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [dbProjects, setDbProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    const fetchDbProjects = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase.from('projects').select('*, cover_asset:assets(*)').eq('status', 'Published');
+        if (!error && data) {
+          const mapped = data.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            client: p.location || 'Client',
+            category: p.category || 'Hospital',
+            location: p.location || '',
+            year: p.year || '',
+            image: p.cover_asset?.public_url || '/images/hospital_construction.png',
+            details: p.description || '',
+            scope: []
+          }));
+          setDbProjects(mapped);
+        }
+      } catch (e) { console.error(e); }
+    };
+    fetchDbProjects();
+  }, []);
 
   const categories = language === 'id' 
     ? ["Semua", "Rumah Sakit", "Gigi", "Radiologi", "Laboratorium", "Pemerintah", "Komersial"]
@@ -28,6 +54,9 @@ export const Projects: React.FC = () => {
   const activeFilterCategory = language === 'id' 
     ? (filter === 'Semua' ? 'All' : ["All", "Hospital", "Dental", "Radiology", "Laboratory", "Government", "Commercial"][categories.indexOf(filter)])
     : filter;
+
+  // Combine DB projects and static projects
+  
 
   const projectsList: Project[] = language === 'id' ? [
     {
@@ -225,9 +254,10 @@ export const Projects: React.FC = () => {
     }
   ];
 
+  const finalProjectsList = dbProjects.length > 0 ? [...dbProjects, ...projectsList] : projectsList;
   const filteredProjects = activeFilterCategory === 'All'
-    ? projectsList
-    : projectsList.filter(proj => {
+    ? finalProjectsList
+    : finalProjectsList.filter(proj => {
         // Map translated category back to English logic for matching
         const enCategory = language === 'id' 
           ? ["All", "Hospital", "Dental", "Radiology", "Laboratory", "Government", "Commercial"][["Semua", "Rumah Sakit", "Gigi", "Radiologi", "Laboratorium", "Pemerintah", "Komersial"].indexOf(proj.category)]

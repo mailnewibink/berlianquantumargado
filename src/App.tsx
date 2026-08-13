@@ -18,13 +18,23 @@ import { Projects } from './pages/Projects';
 import { Gallery } from './pages/Gallery';
 import { Contact } from './pages/Contact';
 
+// Admin Components
+import { AdminLayout } from './layouts/AdminLayout';
+import { AdminLogin } from './pages/admin/Login';
+import { AdminDashboard } from './pages/admin/Dashboard';
+import { AdminAssets } from './pages/admin/Assets';
+import { AdminProjects } from './pages/admin/Projects';
+import { AdminProducts } from './pages/admin/Products';
+import { AdminGallery } from './pages/admin/GalleryManager';
+import { AdminServices } from './pages/admin/Services';
+import { AdminRentals } from './pages/admin/Rentals';
+
 // Scroll mitigation component on route change
 const ScrollToTopOnRoute: React.FC = () => {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
     if (hash) {
-      // If there's an anchor hash (e.g., /services#radiation), scroll to that element
       setTimeout(() => {
         const element = document.getElementById(hash.replace('#', ''));
         if (element) {
@@ -54,66 +64,93 @@ const AnimatedRouteWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-const AppRoutes: React.FC = () => {
+const PublicLayout: React.FC<{ children: React.ReactNode, darkMode: boolean, toggleDarkMode: () => void }> = ({ children, darkMode, toggleDarkMode }) => (
+  <>
+    <LoadingScreen />
+    <CursorGlow />
+    <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    <main style={{ minHeight: '80vh' }}>
+      {children}
+    </main>
+    <Footer />
+    <FloatingWhatsApp />
+    <ScrollToTop />
+  </>
+);
+
+const AppRoutes: React.FC<{ darkMode: boolean, toggleDarkMode: () => void }> = ({ darkMode, toggleDarkMode }) => {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="assets" element={<AdminAssets />} />
+          <Route path="projects" element={<AdminProjects />} />
+          <Route path="services" element={<AdminServices />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="rentals" element={<AdminRentals />} />
+          <Route path="gallery" element={<AdminGallery />} />
+        </Route>
+
+        {/* Public Routes */}
         <Route
           path="/"
           element={
-            <AnimatedRouteWrapper>
-              <Home />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Home /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
         <Route
           path="/about"
           element={
-            <AnimatedRouteWrapper>
-              <About />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><About /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
         <Route
           path="/services"
           element={
-            <AnimatedRouteWrapper>
-              <Services />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Services /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
         <Route
           path="/products"
           element={
-            <AnimatedRouteWrapper>
-              <Products />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Products /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
         <Route
           path="/projects"
           element={
-            <AnimatedRouteWrapper>
-              <Projects />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Projects /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
         <Route
           path="/gallery"
           element={
-            <AnimatedRouteWrapper>
-              <Gallery />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Gallery /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
         <Route
           path="/contact"
           element={
-            <AnimatedRouteWrapper>
-              <Contact />
-            </AnimatedRouteWrapper>
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Contact /></AnimatedRouteWrapper>
+            </PublicLayout>
           }
         />
       </Routes>
@@ -124,7 +161,6 @@ const AppRoutes: React.FC = () => {
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(false);
 
-  // Sync dark mode class state on body
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add('dark-mode');
@@ -141,20 +177,7 @@ const App: React.FC = () => {
     <LanguageProvider>
       <Router>
         <ScrollToTopOnRoute />
-        
-        {/* Interactive and layout components */}
-        <LoadingScreen />
-        <CursorGlow />
-        <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        
-        <main style={{ minHeight: '80vh' }}>
-          <AppRoutes />
-        </main>
-
-        <Footer />
-        
-        <FloatingWhatsApp />
-        <ScrollToTop />
+        <AppRoutes darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       </Router>
     </LanguageProvider>
   );

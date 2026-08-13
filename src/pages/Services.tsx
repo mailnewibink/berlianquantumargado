@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Hammer, Activity, Sofa, Settings, CheckCircle } from 'lucide-react';
 import { images } from '../content/assets';
 import { serviceItems as serviceItemsData } from '../content/services';
 import type { IconKey } from '../types/content';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
   switch (iconKey) {
@@ -29,8 +30,30 @@ const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
 
 export const Services: React.FC = () => {
   const { t } = useLanguage();
+  const [dbServices, setDbServices] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDbServices = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase.from('services').select('*, cover_asset:assets(*)').eq('status', 'Published').eq('is_active', true);
+        if (!error && data) {
+          const mapped = data.map((s: any) => ({
+            id: s.slug || s.id,
+            image: s.cover_asset?.public_url || '/images/hero_background.png',
+            icon: <CheckCircle size={28} />, // Default fallback
+            title: s.title,
+            desc: s.description || s.short_description || '',
+            details: s.features || []
+          }));
+          setDbServices(mapped);
+        }
+      } catch (e) { console.error(e); }
+    };
+    fetchDbServices();
+  }, []);
   
-  const serviceItems = serviceItemsData.map((item, index) => ({
+  const staticServiceItems = serviceItemsData.map((item, index) => ({
     id: item.id,
     image: images[item.imageKey],
     icon: getServiceIcon(item.iconKey),
@@ -45,6 +68,7 @@ export const Services: React.FC = () => {
   }));
 
 
+  const serviceItems = dbServices.length > 0 ? [...dbServices, ...staticServiceItems] : staticServiceItems;
   return (
     <div style={{ paddingTop: '80px' }}>
       
@@ -139,7 +163,7 @@ export const Services: React.FC = () => {
 
                 {/* Capabilities check bullet list */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  {item.details.map((bullet, bIdx) => (
+                  {item.details.map((bullet: string, bIdx: number) => (
                     <div key={bIdx} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                       <CheckCircle size={18} style={{ color: 'var(--color-cyan)', flexShrink: 0, marginTop: '2px' }} />
                       <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>{bullet}</span>

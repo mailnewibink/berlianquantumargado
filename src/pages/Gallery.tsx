@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lightbox } from '../components/Lightbox';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface GalleryItem {
   url: string;
@@ -13,8 +14,27 @@ export const Gallery: React.FC = () => {
   const { t, language } = useLanguage();
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [dbGallery, setDbGallery] = useState<GalleryItem[]>([]);
 
-  const galleryItems: GalleryItem[] = language === 'id' ? [
+  useEffect(() => {
+    const fetchDbGallery = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase.from('gallery_items').select('*, asset:assets(*)').eq('status', 'Published').order('sort_order', { ascending: true });
+        if (!error && data) {
+          const mapped = data.map((p: any) => ({
+            url: p.asset?.public_url || '/images/hero_background.png',
+            title: p.title || p.asset?.title || 'Gallery Image',
+            category: p.category || 'Gallery'
+          }));
+          setDbGallery(mapped);
+        }
+      } catch (e) { console.error(e); }
+    };
+    fetchDbGallery();
+  }, []);
+
+  const staticGalleryItems: GalleryItem[] = language === 'id' ? [
     { url: "/images/hero_background.png", title: "Tata Letak Koridor Bedah Cleanroom", category: "Rumah Sakit" },
     { url: "/images/radiation_shielding.png", title: "Jendela & Konsol Tinjau Berlapis Timbal", category: "Radiologi" },
     { url: "/images/hospital_construction.png", title: "Struktur Rangka Plafon Ruang Bedah", category: "Konstruksi" },
@@ -33,6 +53,8 @@ export const Gallery: React.FC = () => {
     { url: "/images/hospital_construction.png", title: "Exposed Laminar Ceiling Filtration Unit", category: "Construction" },
     { url: "/images/radiation_shielding.png", title: "Shielded Lead Door Frame Boundary", category: "Radiology" }
   ];
+
+  const galleryItems = dbGallery.length > 0 ? [...dbGallery, ...staticGalleryItems] : staticGalleryItems;
 
   const handlePrev = () => {
     if (lightboxIndex !== null) {

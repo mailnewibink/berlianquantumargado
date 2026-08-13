@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MessageSquare, Info, ShieldAlert } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface Product {
   id: string;
@@ -21,6 +22,28 @@ export const Products: React.FC = () => {
   const categoryFilter = searchParams.get('cat') || 'All';
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchDbProducts = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase.from('products').select('*, cover_asset:assets(*)').eq('status', 'Published');
+        if (!error && data) {
+          const mapped = data.map((p: any) => ({
+            id: p.id,
+            name: p.title,
+            category: p.category || 'All',
+            specs: p.specifications || '',
+            desc: p.description || '',
+            image: p.cover_asset?.public_url || '/images/hospital_construction.png'
+          }));
+          setDbProducts(mapped);
+        }
+      } catch (e) { console.error(e); }
+    };
+    fetchDbProducts();
+  }, []);
 
   const categories = language === 'id' ? [
     "Semua", "Lembaran Timbal", "Kaca Timbal", "Pintu Timbal", "Pass Box",
@@ -47,7 +70,8 @@ export const Products: React.FC = () => {
   ];
 
   // Filter logic
-  const filteredProducts = productsList.filter(prod => {
+  const finalProductsList = dbProducts.length > 0 ? [...dbProducts, ...productsList] : productsList;
+  const filteredProducts = finalProductsList.filter(prod => {
     const matchesCategory = categoryFilter === 'All' || categoryFilter === 'Semua' || prod.category === categoryFilter;
     const matchesSearch = prod.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
       prod.specs.toLowerCase().includes(searchFilter.toLowerCase()) ||
