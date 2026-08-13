@@ -169,13 +169,14 @@ export const AdminProjects: React.FC = () => {
     setFormSaving(true);
     try {
       let savedProjectId = editingId;
+      const { cover_asset, ...payload } = formData as any;
       
       // 1. Save Project Data
       if (editingId) {
-        const { error } = await (supabase.from('projects') as any).update(formData).eq('id', editingId);
+        const { error } = await (supabase.from('projects') as any).update(payload).eq('id', editingId);
         if (error) throw error;
       } else {
-        const { data, error } = await (supabase.from('projects') as any).insert([formData]).select('id').single();
+        const { data, error } = await (supabase.from('projects') as any).insert([payload]).select('id').single();
         if (error) throw error;
         savedProjectId = data.id;
       }

@@ -125,17 +125,24 @@ export const AdminRentals: React.FC = () => {
     e.preventDefault();
     setFormSaving(true);
     try {
+      const { cover_asset, ...payload } = formData as any;
+
+      if (!payload.slug && payload.title) {
+        payload.slug = generateSlug(payload.title);
+      }
+
       if (editingId) {
-        const { error } = await (supabase.from('rentals') as any).update(formData).eq('id', editingId);
+        const { error } = await (supabase.from('rentals') as any).update(payload).eq('id', editingId);
         if (error) throw error;
       } else {
-        const { error } = await (supabase.from('rentals') as any).insert([formData]);
+        const { error } = await (supabase.from('rentals') as any).insert([payload]);
         if (error) throw error;
       }
       setView('list');
+      fetchRentals();
     } catch (error: any) {
       console.error('Error saving rental:', error);
-      alert(error.message || 'Failed to save rental.');
+      alert(`Gagal menyimpan rental: ${error.message || error.details || 'Unknown error'}`);
     } finally {
       setFormSaving(false);
     }

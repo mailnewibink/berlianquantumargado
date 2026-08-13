@@ -126,17 +126,24 @@ export const AdminProducts: React.FC = () => {
     e.preventDefault();
     setFormSaving(true);
     try {
+      const { cover_asset, ...payload } = formData as any;
+
+      if (!payload.slug && payload.title) {
+        payload.slug = generateSlug(payload.title);
+      }
+
       if (editingId) {
-        const { error } = await (supabase.from('products') as any).update(formData).eq('id', editingId);
+        const { error } = await (supabase.from('products') as any).update(payload).eq('id', editingId);
         if (error) throw error;
       } else {
-        const { error } = await (supabase.from('products') as any).insert([formData]);
+        const { error } = await (supabase.from('products') as any).insert([payload]);
         if (error) throw error;
       }
       setView('list');
+      fetchProducts();
     } catch (error: any) {
       console.error('Error saving product:', error);
-      alert(error.message || 'Failed to save product.');
+      alert(`Gagal menyimpan produk: ${error.message || error.details || 'Unknown error'}`);
     } finally {
       setFormSaving(false);
     }
