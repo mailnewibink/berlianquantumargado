@@ -11,14 +11,20 @@ export const AdminLayout: React.FC = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!isSupabaseConfigured()) {
-        if (!localStorage.getItem('dummy_session')) {
-          navigate('/admin/login');
-        }
+      // 1. Check if dummy session is active
+      if (localStorage.getItem('dummy_session') === 'true') {
         setLoading(false);
         return;
       }
 
+      // 2. Check if Supabase is configured
+      if (!isSupabaseConfigured()) {
+        navigate('/admin/login');
+        setLoading(false);
+        return;
+      }
+
+      // 3. Check Supabase session
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate('/admin/login');

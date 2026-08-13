@@ -28,9 +28,28 @@ export const Products: React.FC = () => {
     const fetchDbProducts = async () => {
       if (!isSupabaseConfigured()) return;
       try {
-        const { data, error } = await supabase.from('products').select('*, cover_asset:assets(*)').eq('status', 'Published');
-        if (!error && data) {
-          const mapped = data.map((p: any) => ({
+        let productsData: any[] = [];
+        let { data, error } = await supabase.from('products').select('*, cover_asset:assets!products_cover_asset_id_fkey(*)').eq('status', 'Published');
+        if (error) {
+          console.warn("PGRST201 fallback in public Products.tsx:", error);
+          const res = await supabase.from('products').select('*').eq('status', 'Published');
+          if (res.data) {
+            productsData = res.data as any[];
+            const coverIds = productsData.map((p: any) => p.cover_asset_id).filter(Boolean);
+            if (coverIds.length > 0) {
+              const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+              const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+              productsData = productsData.map((p: any) => ({
+                ...p,
+                cover_asset: p.cover_asset_id ? { public_url: assetMap.get(p.cover_asset_id) } : null
+              }));
+            }
+          }
+        } else {
+          productsData = (data || []) as any[];
+        }
+        if (productsData.length > 0) {
+          const mapped = productsData.map((p: any) => ({
             id: p.id,
             name: p.title,
             category: p.category || 'All',
@@ -69,10 +88,57 @@ export const Products: React.FC = () => {
     { id: "acc-1", image: "/images/radiation_shielding.png", name: t('productsPage.productsList.10.name'), category: t('productsPage.productsList.10.category'), specs: t('productsPage.productsList.10.specs'), desc: t('productsPage.productsList.10.desc') }
   ];
 
+  // Bidirectional category matching helper
+  const categoryPairs: { [key: string]: string[] } = {
+    "Lead Sheet": ["Lead Sheet", "Lembaran Timbal", "Shielding"],
+    "Lembaran Timbal": ["Lead Sheet", "Lembaran Timbal", "Shielding"],
+    "Lead Glass": ["Lead Glass", "Kaca Timbal"],
+    "Kaca Timbal": ["Lead Glass", "Kaca Timbal"],
+    "Lead Door": ["Lead Door", "Pintu Timbal", "Pintu Radiasi"],
+    "Pintu Timbal": ["Lead Door", "Pintu Timbal", "Pintu Radiasi"],
+    "Pass Box": ["Pass Box"],
+    "Scrub Sink": ["Scrub Sink", "Wastafel Scrub"],
+    "Wastafel Scrub": ["Scrub Sink", "Wastafel Scrub"],
+    "Wall Guard": ["Wall Guard", "Pelindung Dinding"],
+    "Pelindung Dinding": ["Wall Guard", "Pelindung Dinding"],
+    "Handrail": ["Handrail", "Pegangan Tangan"],
+    "Pegangan Tangan": ["Handrail", "Pegangan Tangan"],
+    "Vinyl Flooring": ["Vinyl Flooring", "Lantai Vinyl"],
+    "Lantai Vinyl": ["Vinyl Flooring", "Lantai Vinyl"],
+    "Laboratory Furniture": ["Laboratory Furniture", "Mebel Laboratorium"],
+    "Mebel Laboratorium": ["Laboratory Furniture", "Mebel Laboratorium"],
+    "Lighting": ["Lighting", "Pencahayaan"],
+    "Pencahayaan": ["Lighting", "Pencahayaan"],
+    "Accessories": ["Accessories", "Aksoris", "Aksesoris"],
+    "Aksesoris": ["Accessories", "Aksoris", "Aksesoris"],
+  };
+
+  const isCategoryMatch = (prodCategory: string, filter: string) => {
+    if (!filter || filter === 'All' || filter === 'Semua') return true;
+    if (!prodCategory) return false;
+
+    const fLower = filter.toLowerCase().trim();
+    const pLower = prodCategory.toLowerCase().trim();
+
+    if (fLower === pLower) return true;
+
+    const aliases = categoryPairs[filter] || categoryPairs[prodCategory] || [];
+    if (aliases.some(alias => alias.toLowerCase().trim() === pLower || alias.toLowerCase().trim() === fLower)) {
+      return true;
+    }
+
+    return pLower.includes(fLower) || fLower.includes(pLower);
+  };
+
+  const isButtonActive = (cat: string) => {
+    if ((categoryFilter === 'All' || categoryFilter === 'Semua') && (cat === 'All' || cat === 'Semua')) return true;
+    return isCategoryMatch(cat, categoryFilter);
+  };
+
   // Filter logic
   const finalProductsList = dbProducts.length > 0 ? [...dbProducts, ...productsList] : productsList;
   const filteredProducts = finalProductsList.filter(prod => {
-    const matchesCategory = categoryFilter === 'All' || categoryFilter === 'Semua' || prod.category === categoryFilter;
+    const matchesCategory = isCategoryMatch(prod.category, categoryFilter);
     const matchesSearch = prod.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
       prod.specs.toLowerCase().includes(searchFilter.toLowerCase()) ||
       prod.desc.toLowerCase().includes(searchFilter.toLowerCase());
@@ -178,26 +244,29 @@ export const Products: React.FC = () => {
                 paddingBottom: '1.5rem',
               }}
             >
-              {categories.map((cat, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleCategoryChange(cat)}
-                  style={{
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: 'var(--radius-full)',
-                    border: '1px solid',
-                    borderColor: categoryFilter === cat ? 'var(--color-medical-blue)' : 'var(--glass-border)',
-                    backgroundColor: categoryFilter === cat ? 'var(--color-medical-blue)' : 'transparent',
-                    color: categoryFilter === cat ? '#FFFFFF' : 'var(--text-secondary)',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    transition: 'all var(--transition-fast)',
-                  }}
-                >
-                  {cat}
-                </button>
-              ))}
+              {categories.map((cat, idx) => {
+                const active = isButtonActive(cat);
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleCategoryChange(cat)}
+                    style={{
+                      padding: '0.5rem 1.25rem',
+                      borderRadius: 'var(--radius-full)',
+                      border: '1px solid',
+                      borderColor: active ? 'var(--color-medical-blue)' : 'var(--glass-border)',
+                      backgroundColor: active ? 'var(--color-medical-blue)' : 'transparent',
+                      color: active ? '#FFFFFF' : 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      transition: 'all var(--transition-fast)',
+                    }}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Products Grid */}

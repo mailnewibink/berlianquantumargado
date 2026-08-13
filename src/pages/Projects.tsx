@@ -26,9 +26,28 @@ export const Projects: React.FC = () => {
     const fetchDbProjects = async () => {
       if (!isSupabaseConfigured()) return;
       try {
-        const { data, error } = await supabase.from('projects').select('*, cover_asset:assets(*)').eq('status', 'Published');
-        if (!error && data) {
-          const mapped = data.map((p: any) => ({
+        let projectsData: any[] = [];
+        let { data, error } = await supabase.from('projects').select('*, cover_asset:assets!projects_cover_asset_id_fkey(*)').eq('status', 'Published');
+        if (error) {
+          console.warn("PGRST201 fallback in public Projects.tsx:", error);
+          const res = await supabase.from('projects').select('*').eq('status', 'Published');
+          if (res.data) {
+            projectsData = res.data as any[];
+            const coverIds = projectsData.map((p: any) => p.cover_asset_id).filter(Boolean);
+            if (coverIds.length > 0) {
+              const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+              const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+              projectsData = projectsData.map((p: any) => ({
+                ...p,
+                cover_asset: p.cover_asset_id ? { public_url: assetMap.get(p.cover_asset_id) } : null
+              }));
+            }
+          }
+        } else {
+          projectsData = (data || []) as any[];
+        }
+        if (projectsData.length > 0) {
+          const mapped = projectsData.map((p: any) => ({
             id: p.id,
             title: p.title,
             client: p.location || 'Client',

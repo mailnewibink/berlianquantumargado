@@ -36,12 +36,31 @@ export const Services: React.FC = () => {
     const fetchDbServices = async () => {
       if (!isSupabaseConfigured()) return;
       try {
-        const { data, error } = await supabase.from('services').select('*, cover_asset:assets(*)').eq('status', 'Published').eq('is_active', true);
-        if (!error && data) {
-          const mapped = data.map((s: any) => ({
+        let servicesData: any[] = [];
+        let { data, error } = await supabase.from('services').select('*, cover_asset:assets!services_cover_asset_id_fkey(*)').eq('status', 'Published').eq('is_active', true);
+        if (error) {
+          console.warn("PGRST201 fallback in public Services.tsx:", error);
+          const res = await supabase.from('services').select('*').eq('status', 'Published').eq('is_active', true);
+          if (res.data) {
+            servicesData = res.data as any[];
+            const coverIds = servicesData.map((s: any) => s.cover_asset_id).filter(Boolean);
+            if (coverIds.length > 0) {
+              const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+              const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+              servicesData = servicesData.map((s: any) => ({
+                ...s,
+                cover_asset: s.cover_asset_id ? { public_url: assetMap.get(s.cover_asset_id) } : null
+              }));
+            }
+          }
+        } else {
+          servicesData = (data || []) as any[];
+        }
+        if (servicesData.length > 0) {
+          const mapped = servicesData.map((s: any) => ({
             id: s.slug || s.id,
             image: s.cover_asset?.public_url || '/images/hero_background.png',
-            icon: <CheckCircle size={28} />, // Default fallback
+            icon: <CheckCircle size={28} />,
             title: s.title,
             desc: s.description || s.short_description || '',
             details: s.features || []

@@ -57,13 +57,37 @@ export const AdminRentals: React.FC = () => {
     if (!isSupabaseConfigured()) { setLoading(false); return; }
     try {
       setLoading(true);
+      let rentalsList: any[] = [];
       const { data, error } = await supabase
         .from('rentals')
-        .select('*, cover_asset:assets(public_url)')
+        .select('*, cover_asset:assets!rentals_cover_asset_id_fkey(public_url)')
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
-      if (error) throw error;
-      setRentals(data as any || []);
+
+      if (error) {
+        console.warn("PGRST201 fallback in admin Rentals.tsx:", error);
+        const res = await supabase
+          .from('rentals')
+          .select('*')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+        if (res.error) throw res.error;
+        rentalsList = (res.data || []) as any[];
+
+        const coverIds = rentalsList.map((r: any) => r.cover_asset_id).filter(Boolean);
+        if (coverIds.length > 0) {
+          const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+          const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+          rentalsList = rentalsList.map((r: any) => ({
+            ...r,
+            cover_asset: r.cover_asset_id ? { public_url: assetMap.get(r.cover_asset_id) } : null
+          }));
+        }
+      } else {
+        rentalsList = (data || []) as any[];
+      }
+
+      setRentals(rentalsList as any);
     } catch (error) {
       console.error(error);
     } finally {

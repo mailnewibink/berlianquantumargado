@@ -11,46 +11,56 @@ export const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if already logged in
-    if (!isSupabaseConfigured()) {
-      if (localStorage.getItem('dummy_session')) navigate('/admin');
+    // Check if already logged in (either via dummy session or Supabase session)
+    if (localStorage.getItem('dummy_session') === 'true') {
+      navigate('/admin');
       return;
     }
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate('/admin');
-      }
-    });
+    if (isSupabaseConfigured()) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          navigate('/admin');
+        }
+      });
+    }
   }, [navigate]);
+
+  const handleDemoLogin = () => {
+    localStorage.setItem('dummy_session', 'true');
+    navigate('/admin');
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    try {
-      if (!isSupabaseConfigured()) {
-        if (email === 'admin@berlianquantum.co.id' && password === 'admin123') {
-          localStorage.setItem('dummy_session', 'true');
+    // 1. If using standard demo credentials, log in immediately via Demo Mode
+    if (email === 'admin@berlianquantum.co.id' && password === 'admin123') {
+      handleDemoLogin();
+      return;
+    }
+
+    // 2. Otherwise attempt Supabase Auth if configured
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+        if (data.session) {
+          localStorage.removeItem('dummy_session');
           navigate('/admin');
-        } else {
-          throw new Error('Invalid email or password (Use admin@berlianquantum.co.id / admin123)');
         }
-        return;
+      } catch (err: any) {
+        setError(err.message || 'Gagal autentikasi Supabase. Periksa kembali email & password, atau gunakan Demo Mode.');
+      } finally {
+        setLoading(false);
       }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-      if (data.session) {
-        navigate('/admin');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to authenticate');
-    } finally {
+    } else {
+      setError('Supabase tidak terkonfigurasi. Gunakan email: admin@berlianquantum.co.id / password: admin123');
       setLoading(false);
     }
   };
@@ -69,7 +79,14 @@ export const AdminLogin: React.FC = () => {
 
         {error && (
           <div style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', color: '#EF4444', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
-            {error}
+            <div style={{ marginBottom: '0.5rem' }}>{error}</div>
+            <button 
+              type="button" 
+              onClick={handleDemoLogin}
+              style={{ backgroundColor: '#EF4444', color: '#FFFFFF', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+            >
+              Masuk dengan Demo Mode →
+            </button>
           </div>
         )}
 
@@ -119,7 +136,7 @@ export const AdminLogin: React.FC = () => {
               borderRadius: '8px', 
               border: 'none', 
               cursor: loading ? 'not-allowed' : 'pointer',
-              marginTop: '1rem',
+              marginTop: '0.5rem',
               opacity: loading ? 0.7 : 1,
               transition: 'all 0.2s'
             }}
@@ -127,6 +144,27 @@ export const AdminLogin: React.FC = () => {
             {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
           </button>
         </form>
+
+        <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            style={{
+              backgroundColor: '#F1F5F9',
+              color: '#475569',
+              border: '1px solid #CBD5E1',
+              padding: '0.65rem 1.25rem',
+              borderRadius: '8px',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              width: '100%',
+              transition: 'all 0.2s'
+            }}
+          >
+            ⚡ Direct Demo Login (Bypass Supabase)
+          </button>
+        </div>
 
       </div>
     </div>

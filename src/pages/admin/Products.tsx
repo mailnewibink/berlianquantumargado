@@ -57,13 +57,37 @@ export const AdminProducts: React.FC = () => {
     if (!isSupabaseConfigured()) { setLoading(false); return; }
     try {
       setLoading(true);
+      let productsList: any[] = [];
       const { data, error } = await supabase
         .from('products')
-        .select('*, cover_asset:assets(public_url)')
+        .select('*, cover_asset:assets!products_cover_asset_id_fkey(public_url)')
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
-      if (error) throw error;
-      setProducts(data as any || []);
+
+      if (error) {
+        console.warn("PGRST201 fallback - fetching products without embed:", error);
+        const res = await supabase
+          .from('products')
+          .select('*')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+        if (res.error) throw res.error;
+        productsList = (res.data || []) as any[];
+
+        const coverIds = productsList.map((p: any) => p.cover_asset_id).filter(Boolean);
+        if (coverIds.length > 0) {
+          const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+          const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+          productsList = productsList.map((p: any) => ({
+            ...p,
+            cover_asset: p.cover_asset_id ? { public_url: assetMap.get(p.cover_asset_id) } : null
+          }));
+        }
+      } else {
+        productsList = (data || []) as any[];
+      }
+
+      setProducts(productsList as any);
     } catch (error) {
       console.error(error);
     } finally {

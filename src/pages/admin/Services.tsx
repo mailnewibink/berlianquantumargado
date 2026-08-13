@@ -59,13 +59,37 @@ export const AdminServices: React.FC = () => {
     if (!isSupabaseConfigured()) { setLoading(false); return; }
     try {
       setLoading(true);
+      let servicesList: any[] = [];
       const { data, error } = await supabase
         .from('services')
-        .select('*, cover_asset:assets(public_url)')
+        .select('*, cover_asset:assets!services_cover_asset_id_fkey(public_url)')
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
-      if (error) throw error;
-      setServices(data as any || []);
+
+      if (error) {
+        console.warn("PGRST201 fallback in admin Services.tsx:", error);
+        const res = await supabase
+          .from('services')
+          .select('*')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+        if (res.error) throw res.error;
+        servicesList = (res.data || []) as any[];
+
+        const coverIds = servicesList.map((s: any) => s.cover_asset_id).filter(Boolean);
+        if (coverIds.length > 0) {
+          const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+          const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+          servicesList = servicesList.map((s: any) => ({
+            ...s,
+            cover_asset: s.cover_asset_id ? { public_url: assetMap.get(s.cover_asset_id) } : null
+          }));
+        }
+      } else {
+        servicesList = (data || []) as any[];
+      }
+
+      setServices(servicesList as any);
     } catch (error) {
       console.error(error);
     } finally {

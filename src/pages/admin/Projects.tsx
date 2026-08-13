@@ -78,13 +78,37 @@ export const AdminProjects: React.FC = () => {
     if (!isSupabaseConfigured()) { setLoading(false); return; }
     try {
       setLoading(true);
+      let projectsList: any[] = [];
       const { data, error } = await supabase
         .from('projects')
-        .select('*, cover_asset:assets(public_url)')
+        .select('*, cover_asset:assets!projects_cover_asset_id_fkey(public_url)')
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
-      if (error) throw error;
-      setProjects(data as any || []);
+
+      if (error) {
+        console.warn("PGRST201 fallback in admin Projects.tsx:", error);
+        const res = await supabase
+          .from('projects')
+          .select('*')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+        if (res.error) throw res.error;
+        projectsList = (res.data || []) as any[];
+
+        const coverIds = projectsList.map((p: any) => p.cover_asset_id).filter(Boolean);
+        if (coverIds.length > 0) {
+          const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', coverIds);
+          const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a.public_url]));
+          projectsList = projectsList.map((p: any) => ({
+            ...p,
+            cover_asset: p.cover_asset_id ? { public_url: assetMap.get(p.cover_asset_id) } : null
+          }));
+        }
+      } else {
+        projectsList = (data || []) as any[];
+      }
+
+      setProjects(projectsList as any);
     } catch (error) {
       console.error(error);
     } finally {
