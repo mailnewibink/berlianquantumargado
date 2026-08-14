@@ -46,16 +46,42 @@ export const Rentals: React.FC = () => {
           rentalsData = (data || []) as any[];
         }
         if (rentalsData.length > 0) {
-          const mapped = rentalsData.map((r: any) => ({
-            id: r.id,
-            title: r.title,
-            category: r.category || 'Equipment Rental',
-            specs: r.specifications || '',
-            desc: r.description || r.short_description || '',
-            availability: r.availability_status || 'AVAILABLE',
-            terms: r.rental_terms || 'Harian / Mingguan / Bulanan',
-            image: r.cover_asset?.public_url || '/images/medical_equipment.png'
-          }));
+          const allAssetIds: string[] = [];
+          rentalsData.forEach((r: any) => {
+            if (r.cover_asset_id) allAssetIds.push(r.cover_asset_id);
+            if (Array.isArray(r.gallery_assets)) {
+              r.gallery_assets.forEach((gId: string) => { if (gId) allAssetIds.push(gId); });
+            }
+          });
+
+          let assetMap = new Map<string, string>();
+          if (allAssetIds.length > 0) {
+            const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', allAssetIds);
+            if (assetsData) {
+              assetMap = new Map((assetsData as any[]).map((a: any) => [a.id, a.public_url]));
+            }
+          }
+
+          const mapped = rentalsData.map((r: any) => {
+            const coverUrl = r.cover_asset?.public_url || assetMap.get(r.cover_asset_id);
+            const galleryUrls = Array.isArray(r.gallery_assets) 
+              ? r.gallery_assets.map((id: string) => assetMap.get(id) || id).filter((url: any) => typeof url === 'string' && url.startsWith('http'))
+              : [];
+            
+            const imageList = Array.from(new Set([coverUrl, ...galleryUrls].filter(Boolean) as string[]));
+
+            return {
+              id: r.id,
+              title: r.title,
+              category: r.category || 'Equipment Rental',
+              specs: r.specifications || '',
+              desc: r.description || r.short_description || '',
+              availability: r.availability_status || 'AVAILABLE',
+              terms: r.rental_terms || 'Harian / Mingguan / Bulanan',
+              image: coverUrl || '/images/medical_equipment.png',
+              images: imageList.length > 0 ? imageList : undefined
+            };
+          });
           setDbRentals(mapped);
         }
       } catch (e) { console.error(e); }
@@ -72,7 +98,8 @@ export const Rentals: React.FC = () => {
       desc: "Perangkat survey meter portabel certified untuk inspeksi kebocoran radiasi di ruang CT Scan, X-Ray, dan Cath Lab.",
       availability: "Tersedia",
       terms: "Sewa Harian / Mingguan",
-      image: "/images/radiation_shielding.png"
+      image: "/images/radiation_shielding.png",
+      images: ["/images/radiation_shielding.png", "/images/medical_equipment.png"]
     },
     {
       id: "r-2",
@@ -82,7 +109,8 @@ export const Rentals: React.FC = () => {
       desc: "Mobile scrub sink siap pakai dengan sistem air steril terintegrasi untuk kebutuhan instalasi darurat atau renovasi kamar ruang operasi.",
       availability: "Tersedia",
       terms: "Sewa Bulanan / Proyek",
-      image: "/images/scrub_sink.png"
+      image: "/images/scrub_sink.png",
+      images: ["/images/scrub_sink.png", "/images/hospital_construction.png"]
     },
     {
       id: "r-3",
@@ -92,7 +120,8 @@ export const Rentals: React.FC = () => {
       desc: "Unit pemurni udara laminar bergerak untuk menciptakan zona steril sementara selama pengerjaan konstruksi atau perawatan ruang medis.",
       availability: "Tersedia",
       terms: "Sewa Mingguan / Bulanan",
-      image: "/images/pass_box.png"
+      image: "/images/pass_box.png",
+      images: ["/images/pass_box.png", "/images/radiation_shielding.png"]
     }
   ] : [
     {
@@ -103,7 +132,8 @@ export const Rentals: React.FC = () => {
       desc: "Certified portable survey meter for inspecting radiation shielding integrity in CT Scan and X-Ray suites.",
       availability: "Available",
       terms: "Daily / Weekly Rental",
-      image: "/images/radiation_shielding.png"
+      image: "/images/radiation_shielding.png",
+      images: ["/images/radiation_shielding.png", "/images/medical_equipment.png"]
     },
     {
       id: "r-2",
@@ -113,7 +143,8 @@ export const Rentals: React.FC = () => {
       desc: "Plug-and-play mobile scrub station with sterile water system for temporary operating suite setups.",
       availability: "Available",
       terms: "Monthly / Project Rental",
-      image: "/images/scrub_sink.png"
+      image: "/images/scrub_sink.png",
+      images: ["/images/scrub_sink.png", "/images/hospital_construction.png"]
     },
     {
       id: "r-3",
@@ -123,7 +154,8 @@ export const Rentals: React.FC = () => {
       desc: "Mobile laminar airflow purification unit to establish temporary sterile clean zones during facility maintenance.",
       availability: "Available",
       terms: "Weekly / Monthly Rental",
-      image: "/images/pass_box.png"
+      image: "/images/pass_box.png",
+      images: ["/images/pass_box.png", "/images/radiation_shielding.png"]
     }
   ];
 

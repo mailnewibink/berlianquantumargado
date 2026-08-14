@@ -15,22 +15,10 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Ensure there are always at least 2-3 images to slide through if only 1 is provided
-  const defaultFallbackPool = [
-    '/images/hospital_construction.png',
-    '/images/radiation_shielding.png',
-    '/images/medical_equipment.png',
-    '/images/scrub_sink.png',
-    '/images/pass_box.png',
-    '/images/hero_background.png'
-  ];
-
-  const slideList = (images && images.length > 1) 
-    ? images 
-    : [
-        images[0] || '/images/hospital_construction.png',
-        ...defaultFallbackPool.filter(img => img !== images[0]).slice(0, 2)
-      ];
+  // Use exact provided asset images for the item
+  const slideList = (images && images.length > 0)
+    ? images.filter(img => img && typeof img === 'string' && img.trim() !== '')
+    : ['/images/hospital_construction.png'];
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -73,9 +73,19 @@ export const Services: React.FC = () => {
     fetchDbServices();
   }, []);
   
+  const serviceImagesMap: { [key: string]: string[] } = {
+    radiation: ['/images/radiation_shielding.png', '/images/hospital_construction.png'],
+    construction: ['/images/hospital_construction.png', '/images/hero_background.png'],
+    hvac: ['/images/pass_box.png', '/images/scrub_sink.png'],
+    furniture: ['/images/scrub_sink.png', '/images/medical_equipment.png'],
+    installation: ['/images/medical_equipment.png', '/images/radiation_shielding.png'],
+    maintenance: ['/images/radiation_shielding.png', '/images/pass_box.png'],
+  };
+
   const staticServiceItems = serviceItemsData.map((item, index) => ({
     id: item.id,
     image: images[item.imageKey],
+    images: serviceImagesMap[item.id] || [images[item.imageKey]],
     icon: getServiceIcon(item.iconKey),
     title: t(`servicesPage.services.${index}.title`),
     desc: t(`servicesPage.services.${index}.desc`),
@@ -86,7 +96,6 @@ export const Services: React.FC = () => {
       t(`servicesPage.services.${index}.details.3`)
     ].filter(Boolean),
   }));
-
 
   const serviceItems = dbServices.length > 0 ? [...dbServices, ...staticServiceItems] : staticServiceItems;
   return (
