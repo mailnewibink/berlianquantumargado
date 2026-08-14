@@ -27,7 +27,14 @@ const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
   }
 };
 
-
+const serviceImagesMap: { [key: string]: string[] } = {
+  radiation: ['/images/radiation_shielding.png', '/images/hospital_construction.png'],
+  construction: ['/images/hospital_construction.png', '/images/hero_background.png'],
+  hvac: ['/images/pass_box.png', '/images/scrub_sink.png'],
+  furniture: ['/images/scrub_sink.png', '/images/medical_equipment.png'],
+  installation: ['/images/medical_equipment.png', '/images/radiation_shielding.png'],
+  maintenance: ['/images/radiation_shielding.png', '/images/pass_box.png'],
+};
 
 export const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -58,29 +65,47 @@ export const Services: React.FC = () => {
           servicesData = (data || []) as any[];
         }
         if (servicesData.length > 0) {
-          const mapped = servicesData.map((s: any) => ({
-            id: s.slug || s.id,
-            image: s.cover_asset?.public_url || '/images/hero_background.png',
-            icon: <CheckCircle size={28} />,
-            title: s.title,
-            desc: s.description || s.short_description || '',
-            details: s.features || []
-          }));
+          const allAssetIds: string[] = [];
+          servicesData.forEach((s: any) => {
+            if (s.cover_asset_id) allAssetIds.push(s.cover_asset_id);
+            if (Array.isArray(s.gallery_assets)) {
+              s.gallery_assets.forEach((gId: string) => { if (gId) allAssetIds.push(gId); });
+            }
+          });
+
+          let assetMap = new Map<string, string>();
+          if (allAssetIds.length > 0) {
+            const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url').in('id', allAssetIds);
+            if (assetsData) {
+              assetMap = new Map((assetsData as any[]).map((a: any) => [a.id, a.public_url]));
+            }
+          }
+
+          const mapped = servicesData.map((s: any) => {
+            const coverUrl = s.cover_asset?.public_url || assetMap.get(s.cover_asset_id);
+            const galleryUrls = Array.isArray(s.gallery_assets) 
+              ? s.gallery_assets.map((id: string) => assetMap.get(id) || id).filter((url: any) => typeof url === 'string' && url.startsWith('http'))
+              : [];
+            
+            const imageList = Array.from(new Set([coverUrl, ...galleryUrls].filter(Boolean) as string[]));
+            const fallbackList = serviceImagesMap[s.slug || s.id] || [coverUrl || '/images/hero_background.png'];
+
+            return {
+              id: s.slug || s.id,
+              image: coverUrl || '/images/hero_background.png',
+              images: imageList.length > 0 ? imageList : fallbackList,
+              icon: <CheckCircle size={28} />,
+              title: s.title,
+              desc: s.description || s.short_description || '',
+              details: s.features || []
+            };
+          });
           setDbServices(mapped);
         }
       } catch (e) { console.error(e); }
     };
     fetchDbServices();
   }, []);
-  
-  const serviceImagesMap: { [key: string]: string[] } = {
-    radiation: ['/images/radiation_shielding.png', '/images/hospital_construction.png'],
-    construction: ['/images/hospital_construction.png', '/images/hero_background.png'],
-    hvac: ['/images/pass_box.png', '/images/scrub_sink.png'],
-    furniture: ['/images/scrub_sink.png', '/images/medical_equipment.png'],
-    installation: ['/images/medical_equipment.png', '/images/radiation_shielding.png'],
-    maintenance: ['/images/radiation_shielding.png', '/images/pass_box.png'],
-  };
 
   const staticServiceItems = serviceItemsData.map((item, index) => ({
     id: item.id,
