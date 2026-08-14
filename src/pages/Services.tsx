@@ -1,30 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Hammer, Activity, Sofa, Settings, CheckCircle } from 'lucide-react';
-import { serviceItems as serviceItemsData } from '../content/services';
-import type { IconKey } from '../types/content';
+import { CheckCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { ImageSlider } from '../components/ImageSlider';
-
-const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
-  switch (iconKey) {
-    case 'shield':
-      return <Shield size={28} />;
-    case 'hammer':
-      return <Hammer size={28} />;
-    case 'activity':
-      return <Activity size={28} />;
-    case 'sofa':
-      return <Sofa size={28} />;
-    case 'settings':
-      return <Settings size={28} />;
-    case 'checkCircle':
-      return <CheckCircle size={28} />;
-    default:
-      return <Shield size={28} />;
-  }
-};
 
 export const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -96,22 +75,7 @@ export const Services: React.FC = () => {
     fetchDbServices();
   }, []);
 
-  const staticServiceItems = serviceItemsData.map((item, index) => ({
-    id: item.id,
-    image: '',
-    images: [],
-    icon: getServiceIcon(item.iconKey),
-    title: t(`servicesPage.services.${index}.title`),
-    desc: t(`servicesPage.services.${index}.desc`),
-    details: [
-      t(`servicesPage.services.${index}.details.0`),
-      t(`servicesPage.services.${index}.details.1`),
-      t(`servicesPage.services.${index}.details.2`),
-      t(`servicesPage.services.${index}.details.3`)
-    ].filter(Boolean),
-  }));
-
-  const serviceItems = dbServices.length > 0 ? [...dbServices, ...staticServiceItems] : staticServiceItems;
+  const serviceItems = dbServices;
   return (
     <div style={{ paddingTop: '80px' }}>
       
@@ -139,78 +103,86 @@ export const Services: React.FC = () => {
       {/* Services Grid Section */}
       <section className="section-padding">
         <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: '6rem' }}>
-          {serviceItems.map((item, idx) => (
-            <div
-              key={idx}
-              id={item.id}
-              style={{
-                display: 'flex',
-                flexDirection: idx % 2 === 0 ? 'row' : 'row-reverse',
-                alignItems: 'center',
-                gap: '4rem',
-                flexWrap: 'wrap',
-              }}
-              className="service-row"
-            >
-              {/* Image box */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                style={{ flex: '1 1 450px' }}
+          {serviceItems.length > 0 ? (
+            serviceItems.map((item, idx) => (
+              <div
+                key={idx}
+                id={item.id}
+                style={{
+                  display: 'flex',
+                  flexDirection: idx % 2 === 0 ? 'row' : 'row-reverse',
+                  alignItems: 'center',
+                  gap: '4rem',
+                  flexWrap: 'wrap',
+                }}
+                className="service-row"
               >
-                <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: 'var(--shadow-medium)', border: '1px solid var(--glass-border)' }}>
-                  <ImageSlider
-                    images={item.images || [item.image]}
-                    alt={item.title}
-                    height="350px"
-                  />
-                </div>
-              </motion.div>
-
-              {/* Text & Capability Details box */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.15 }}
-                style={{ flex: '1.2 1 450px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div
-                    style={{
-                      width: '56px',
-                      height: '56px',
-                      borderRadius: '16px',
-                      backgroundColor: 'var(--bg-tertiary)',
-                      color: 'var(--color-medical-blue)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {item.icon}
+                {/* Image box */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  style={{ flex: '1 1 450px' }}
+                >
+                  <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: 'var(--shadow-medium)', border: '1px solid var(--glass-border)' }}>
+                    <ImageSlider
+                      images={item.images || [item.image]}
+                      alt={item.title}
+                      height="350px"
+                    />
                   </div>
-                  <h2 style={{ fontSize: '1.75rem', fontFamily: 'Manrope', fontWeight: 800 }}>{item.title}</h2>
-                </div>
+                </motion.div>
 
-                <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
-                  {item.desc}
-                </p>
-
-                {/* Capabilities check bullet list */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  {item.details.map((bullet: string, bIdx: number) => (
-                    <div key={bIdx} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                      <CheckCircle size={18} style={{ color: 'var(--color-cyan)', flexShrink: 0, marginTop: '2px' }} />
-                      <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>{bullet}</span>
+                {/* Text & Capability Details box */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.15 }}
+                  style={{ flex: '1.2 1 450px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div
+                      style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '16px',
+                        backgroundColor: 'var(--bg-tertiary)',
+                        color: 'var(--color-medical-blue)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {item.icon}
                     </div>
-                  ))}
-                </div>
-              </motion.div>
+                    <h2 style={{ fontSize: '1.75rem', fontFamily: 'Manrope', fontWeight: 800 }}>{item.title}</h2>
+                  </div>
+
+                  <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
+                    {item.desc}
+                  </p>
+
+                  {/* Capabilities check bullet list */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    {item.details.map((bullet: string, bIdx: number) => (
+                      <div key={bIdx} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                        <CheckCircle size={18} style={{ color: 'var(--color-cyan)', flexShrink: 0, marginTop: '2px' }} />
+                        <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>{bullet}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0 }}>
+                Belum ada layanan yang dipublikasikan.
+              </p>
             </div>
-          ))}
+          )}
         </div>
       </section>
 

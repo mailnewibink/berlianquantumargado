@@ -103,20 +103,6 @@ export const Products: React.FC = () => {
     "Laboratory Furniture", "Lighting", "Accessories"
   ];
 
-  const productsList: Product[] = [
-    { id: "ls-1", image: "", images: [], name: t('productsPage.productsList.0.name'), category: t('productsPage.productsList.0.category'), specs: t('productsPage.productsList.0.specs'), desc: t('productsPage.productsList.0.desc') },
-    { id: "lg-1", image: "", images: [], name: t('productsPage.productsList.1.name'), category: t('productsPage.productsList.1.category'), specs: t('productsPage.productsList.1.specs'), desc: t('productsPage.productsList.1.desc') },
-    { id: "ld-1", image: "", images: [], name: t('productsPage.productsList.2.name'), category: t('productsPage.productsList.2.category'), specs: t('productsPage.productsList.2.specs'), desc: t('productsPage.productsList.2.desc') },
-    { id: "pb-1", image: "", images: [], name: t('productsPage.productsList.3.name'), category: t('productsPage.productsList.3.category'), specs: t('productsPage.productsList.3.specs'), desc: t('productsPage.productsList.3.desc') },
-    { id: "ss-1", image: "", images: [], name: t('productsPage.productsList.4.name'), category: t('productsPage.productsList.4.category'), specs: t('productsPage.productsList.4.specs'), desc: t('productsPage.productsList.4.desc') },
-    { id: "wg-1", image: "", images: [], name: t('productsPage.productsList.5.name'), category: t('productsPage.productsList.5.category'), specs: t('productsPage.productsList.5.specs'), desc: t('productsPage.productsList.5.desc') },
-    { id: "hr-1", image: "", images: [], name: t('productsPage.productsList.6.name'), category: t('productsPage.productsList.6.category'), specs: t('productsPage.productsList.6.specs'), desc: t('productsPage.productsList.6.desc') },
-    { id: "vf-1", image: "", images: [], name: t('productsPage.productsList.7.name'), category: t('productsPage.productsList.7.category'), specs: t('productsPage.productsList.7.specs'), desc: t('productsPage.productsList.7.desc') },
-    { id: "lf-1", image: "", images: [], name: t('productsPage.productsList.8.name'), category: t('productsPage.productsList.8.category'), specs: t('productsPage.productsList.8.specs'), desc: t('productsPage.productsList.8.desc') },
-    { id: "li-1", image: "", images: [], name: t('productsPage.productsList.9.name'), category: t('productsPage.productsList.9.category'), specs: t('productsPage.productsList.9.specs'), desc: t('productsPage.productsList.9.desc') },
-    { id: "acc-1", image: "", images: [], name: t('productsPage.productsList.10.name'), category: t('productsPage.productsList.10.category'), specs: t('productsPage.productsList.10.specs'), desc: t('productsPage.productsList.10.desc') }
-  ];
-
   // Bidirectional category matching helper
   const categoryPairs: { [key: string]: string[] } = {
     "Lead Sheet": ["Lead Sheet", "Lembaran Timbal", "Shielding"],
@@ -164,8 +150,8 @@ export const Products: React.FC = () => {
     return isCategoryMatch(cat, categoryFilter);
   };
 
-  // Filter logic
-  const finalProductsList = dbProducts.length > 0 ? [...dbProducts, ...productsList] : productsList;
+  // Filter logic - ONLY real products from database/admin
+  const finalProductsList = dbProducts;
   const filteredProducts = finalProductsList.filter(prod => {
     const matchesCategory = isCategoryMatch(prod.category, categoryFilter);
     const matchesSearch = prod.name.toLowerCase().includes(searchFilter.toLowerCase()) ||

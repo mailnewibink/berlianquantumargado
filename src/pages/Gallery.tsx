@@ -11,7 +11,7 @@ interface GalleryItem {
 }
 
 export const Gallery: React.FC = () => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [dbGallery, setDbGallery] = useState<GalleryItem[]>([]);
@@ -73,27 +73,7 @@ export const Gallery: React.FC = () => {
     fetchDbGallery();
   }, []);
 
-  const staticGalleryItems: GalleryItem[] = language === 'id' ? [
-    { url: "/images/hero_background.png", title: "Tata Letak Koridor Bedah Cleanroom", category: "Rumah Sakit" },
-    { url: "/images/radiation_shielding.png", title: "Jendela & Konsol Tinjau Berlapis Timbal", category: "Radiologi" },
-    { url: "/images/hospital_construction.png", title: "Struktur Rangka Plafon Ruang Bedah", category: "Konstruksi" },
-    { url: "/images/medical_equipment.png", title: "Lampu Bedah Kubah Ganda Terintegrasi", category: "Peralatan" },
-    { url: "/images/scrub_sink.png", title: "Stasiun Cuci Baja Tahan Karat Premium", category: "Laboratorium" },
-    { url: "/images/pass_box.png", title: "Pass Box Interlock Cleanroom Steril", category: "Laboratorium" },
-    { url: "/images/hospital_construction.png", title: "Unit Filtrasi Plafon Laminar Terekspos", category: "Konstruksi" },
-    { url: "/images/radiation_shielding.png", title: "Batas Rangka Pintu Timbal Pelindung", category: "Radiologi" }
-  ] : [
-    { url: "/images/hero_background.png", title: "Cleanroom Surgical Corridor Layout", category: "Hospital" },
-    { url: "/images/radiation_shielding.png", title: "Lead Shielded Viewing Window & Console", category: "Radiology" },
-    { url: "/images/hospital_construction.png", title: "Surgical Suite Ceiling Frame Structure", category: "Construction" },
-    { url: "/images/medical_equipment.png", title: "Integrated Double Dome Surgical Lights", category: "Equipment" },
-    { url: "/images/scrub_sink.png", title: "Premium Stainless Steel Scrub Station", category: "Laboratory" },
-    { url: "/images/pass_box.png", title: "Sterile Cleanroom Interlock Pass Box", category: "Laboratory" },
-    { url: "/images/hospital_construction.png", title: "Exposed Laminar Ceiling Filtration Unit", category: "Construction" },
-    { url: "/images/radiation_shielding.png", title: "Shielded Lead Door Frame Boundary", category: "Radiology" }
-  ];
-
-  const galleryItems = dbGallery.length > 0 ? [...dbGallery, ...staticGalleryItems] : staticGalleryItems;
+  const galleryItems = dbGallery;
 
   const handlePrev = () => {
     if (lightboxIndex !== null) {
@@ -131,79 +111,96 @@ export const Gallery: React.FC = () => {
         </div>
       </section>
 
-      {/* Masonry Grid */}
+      {/* Masonry / Grid Gallery Section */}
       <section className="section-padding">
         <div className="container">
-          <div className="masonry-wrapper">
-            {galleryItems.map((item, idx) => (
-              <motion.div
-                key={idx}
-                className="masonry-item glass-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: (idx % 3) * 0.1 }}
-                onClick={() => setLightboxIndex(idx)}
-                style={{
-                  cursor: 'pointer',
-                  marginBottom: '24px',
-                  breakInside: 'avoid',
-                  overflow: 'hidden',
-                  padding: 0,
-                }}
-              >
-                <div style={{ position: 'relative', overflow: 'hidden' }} className="image-hover-wrapper">
-                  <img
-                    src={item.url}
-                    alt={item.title}
-                    loading="lazy"
-                    style={{
-                      width: '100%',
-                      display: 'block',
-                      objectFit: 'cover',
-                      transition: 'transform 0.5s ease',
-                    }}
-                  />
-                  
-                  {/* Photo Hover overlay with text */}
-                  <div
-                    className="gallery-overlay"
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.85) 100%)',
-                      opacity: 0,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'flex-end',
-                      padding: '1.5rem',
-                      color: '#FFFFFF',
-                      transition: 'opacity 0.3s ease',
-                    }}
-                  >
-                    <span
+          {galleryItems.length > 0 ? (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '1.5rem',
+              }}
+            >
+              {galleryItems.map((item, index) => (
+                <motion.div
+                  key={index}
+                  onClick={() => setLightboxIndex(index)}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  className="gallery-item-card"
+                  style={{
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    boxShadow: 'var(--shadow-small)',
+                    border: '1px solid var(--glass-border)',
+                    height: '240px',
+                    backgroundColor: 'var(--bg-secondary)'
+                  }}
+                >
+                  <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                    <img
+                      src={item.url}
+                      alt={item.title}
                       style={{
-                        fontSize: '0.7rem',
-                        textTransform: 'uppercase',
-                        color: 'var(--color-cyan)',
-                        letterSpacing: '0.1em',
-                        fontWeight: 700,
-                        marginBottom: '0.25rem',
+                        width: '100%',
+                        height: '100%',
+                        display: 'block',
+                        objectFit: 'cover',
+                        transition: 'transform 0.5s ease',
+                      }}
+                    />
+                    
+                    {/* Photo Hover overlay with text */}
+                    <div
+                      className="gallery-overlay"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.85) 100%)',
+                        opacity: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                        padding: '1.5rem',
+                        color: '#FFFFFF',
+                        transition: 'opacity 0.3s ease',
                       }}
                     >
-                      {item.category}
-                    </span>
-                    <h4 style={{ fontFamily: 'Manrope', fontSize: '1rem', fontWeight: 700, margin: 0 }}>
-                      {item.title}
-                    </h4>
+                      <span
+                        style={{
+                          fontSize: '0.7rem',
+                          textTransform: 'uppercase',
+                          color: 'var(--color-cyan)',
+                          letterSpacing: '0.1em',
+                          fontWeight: 700,
+                          marginBottom: '0.25rem',
+                        }}
+                      >
+                        {item.category}
+                      </span>
+                      <h4 style={{ fontFamily: 'Manrope', fontSize: '1rem', fontWeight: 700, margin: 0 }}>
+                        {item.title}
+                      </h4>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0 }}>
+                Belum ada foto galeri yang dipublikasikan.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
