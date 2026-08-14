@@ -145,7 +145,7 @@ export const Home: React.FC = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundImage: 'url("https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703403/ChatGPT_Image_Aug_14_2026_05_21_33_PM_bctfgy.png")',
+            backgroundImage: 'url("https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703400/ChatGPT_Image_Aug_14_2026_05_26_11_PM_o1ilfz.png")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             opacity: 0.45,
@@ -260,8 +260,8 @@ export const Home: React.FC = () => {
               transition={{ duration: 0.8 }}
             >
               <img
-                src="/images/hospital_construction.png"
-                alt="Hospital Construction Site"
+                src="https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703403/ChatGPT_Image_Aug_14_2026_05_21_33_PM_bctfgy.png"
+                alt="Infrastruktur Berkinerja Tinggi"
                 style={{
                   width: '100%',
                   borderRadius: '24px',
