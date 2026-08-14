@@ -14,6 +14,7 @@ import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Services } from './pages/Services';
 import { Products } from './pages/Products';
+import { Rentals } from './pages/Rentals';
 import { Projects } from './pages/Projects';
 import { Gallery } from './pages/Gallery';
 import { Contact } from './pages/Contact';
@@ -128,6 +129,14 @@ const AppRoutes: React.FC<{ darkMode: boolean, toggleDarkMode: () => void }> = (
           element={
             <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
               <AnimatedRouteWrapper><Products /></AnimatedRouteWrapper>
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/rentals"
+          element={
+            <PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+              <AnimatedRouteWrapper><Rentals /></AnimatedRouteWrapper>
             </PublicLayout>
           }
         />

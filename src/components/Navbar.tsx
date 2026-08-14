@@ -159,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
           <Link to="/" className="nav-link" style={navLinkStyle(location.pathname === "/")}>{t('nav.home')}</Link>
           <Link to="/about" className="nav-link" style={navLinkStyle(location.pathname === "/about")}>{t('nav.about')}</Link>
           
-          {/* Services Mega Menu Trigger */}
+          {/* Layanan Dropdown Trigger (Jasa, Produk, Sewa) */}
           <div
             style={{
               position: 'relative',
@@ -169,80 +169,121 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
             onMouseEnter={() => setActiveMegaMenu('services')}
             onMouseLeave={() => setActiveMegaMenu(null)}
           >
-            <Link
-              to="/services"
-              className="nav-link"
-              style={{
-                ...navLinkStyle(location.pathname.startsWith("/services")),
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem',
-               
-              }}
-            >
-              {t('nav.services')} <ChevronDown size={14} style={{ transform: activeMegaMenu === 'services' ? 'rotate(180deg)' : 'rotate(0)' }} />
-              </Link>
-
-            {/* Mega Menu Services Dropdown */}
             <div
-              className="glass-card"
-              style={{
-                ...megaMenuStyle,
-                opacity: activeMegaMenu === "services" ? 1 : 0,
-                visibility: activeMegaMenu === "services" ? "visible" : "hidden",
-                pointerEvents: activeMegaMenu === "services" ? "auto" : "none",
-                transform:
-                  activeMegaMenu === "services"
-                    ? "translateX(-50%) translateY(0)"
-                    : "translateX(-50%) translateY(-10px)",
-              }}
-            >
-            </div>
-          </div>
-
-          {/* Products Mega Menu Trigger */}
-          <div
-            style={{
-              position: 'relative',
-              paddingBottom: '20px',
-              marginBottom: '-20px',
-            }}
-            onMouseEnter={() => setActiveMegaMenu('products')}
-            onMouseLeave={() => setActiveMegaMenu(null)}
-          >
-<Link to="/products"
               className="nav-link"
               style={{
-                ...navLinkStyle(location.pathname.startsWith("/products")),
+                ...navLinkStyle(location.pathname.startsWith("/services") || location.pathname.startsWith("/products") || location.pathname.startsWith("/rentals")),
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.25rem',
-                background: 'none',
-                border: 'none',
                 cursor: 'pointer',
               }}
             >
-              {t('nav.products')} <ChevronDown size={14} style={{ transform: activeMegaMenu === 'products' ? 'rotate(180deg)' : 'rotate(0)' }} />
-              </Link>
+              {t('nav.services')} <ChevronDown size={14} style={{ transform: activeMegaMenu === 'services' ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
+            </div>
 
-            {/* Mega Menu Products Dropdown */}
+            {/* Dropdown Card */}
             <div
               className="glass-card"
               style={{
-                ...megaMenuStyle,
-                opacity: activeMegaMenu === "products" ? 1 : 0,
-                visibility: activeMegaMenu === "products" ? "visible" : "hidden",
-                pointerEvents: activeMegaMenu === "products" ? "auto" : "none",
-                transform:
-                  activeMegaMenu === "products"
-                    ? "translateX(-50%) translateY(0)"
-                    : "translateX(-50%) translateY(-10px)",
+                position: 'absolute',
+                top: 'calc(100% - 5px)',
+                left: '50%',
+                transform: activeMegaMenu === 'services' ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(-10px)',
+                opacity: activeMegaMenu === 'services' ? 1 : 0,
+                visibility: activeMegaMenu === 'services' ? 'visible' : 'hidden',
+                pointerEvents: activeMegaMenu === 'services' ? 'auto' : 'none',
+                transition: 'all 0.25s ease',
+                width: '780px',
+                padding: '1.5rem',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: '1.25rem',
+                backgroundColor: 'var(--bg-primary)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: '16px',
+                boxShadow: 'var(--shadow-medium)',
+                zIndex: 9999,
               }}
             >
+              {/* Column 1: Jasa */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Link 
+                  to="/services" 
+                  style={{ textDecoration: 'none', color: 'var(--color-medical-blue)', fontWeight: 800, fontSize: '1.05rem', fontFamily: 'Manrope', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                >
+                  {t('nav.jasa')} →
+                </Link>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                  {language === 'id' ? 'Konstruksi & Rekayasa Klinis' : 'Clinical Engineering & Contracting'}
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.25rem' }}>
+                  {servicesLinks.map((item, idx) => (
+                    <Link 
+                      key={idx} 
+                      to={item.path}
+                      style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.825rem', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-medical-blue)'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Column 2: Produk */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', borderLeft: '1px solid var(--glass-border)', paddingLeft: '1.25rem' }}>
+                <Link 
+                  to="/products" 
+                  style={{ textDecoration: 'none', color: 'var(--color-cyan)', fontWeight: 800, fontSize: '1.05rem', fontFamily: 'Manrope', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                >
+                  {t('nav.produk')} →
+                </Link>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                  {language === 'id' ? 'Katalog Peralatan & Timbal' : 'Medical Materials & Shielding'}
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.25rem' }}>
+                  {productsLinks.map((item, idx) => (
+                    <Link 
+                      key={idx} 
+                      to={item.path}
+                      style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.825rem', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-cyan)'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Column 3: Sewa */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', borderLeft: '1px solid var(--glass-border)', paddingLeft: '1.25rem' }}>
+                <Link 
+                  to="/rentals" 
+                  style={{ textDecoration: 'none', color: 'var(--color-medical-blue)', fontWeight: 800, fontSize: '1.05rem', fontFamily: 'Manrope', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                >
+                  {t('nav.sewa')} →
+                </Link>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                  {language === 'id' ? 'Persewaan Alat Radiasi & Medis' : 'Radiation Testing & Equipment Leasing'}
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.25rem' }}>
+                  <Link to="/rentals" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.825rem' }}>
+                    {language === 'id' ? 'Sewa Survey Meter Radiasi' : 'Radiation Leak Survey Meter'}
+                  </Link>
+                  <Link to="/rentals" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.825rem' }}>
+                    {language === 'id' ? 'Sewa Mobile Scrub Sink Steril' : 'Mobile Surgical Scrub Station'}
+                  </Link>
+                  <Link to="/rentals" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.825rem' }}>
+                    {language === 'id' ? 'Sewa Unit Filter Cleanroom' : 'Mobile Cleanroom HEPA Unit'}
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
 
-          <Link to="/projects" className="nav-link" style={navLinkStyle(location.pathname === "/projects")}>{t('nav.projects')}</Link>
           <Link to="/gallery" className="nav-link" style={navLinkStyle(location.pathname === "/gallery")}>{t('nav.gallery')}</Link>
           <Link to="/contact" className="nav-link" style={navLinkStyle(location.pathname === "/contact")}>{t('nav.contact')}</Link>
         </div>
@@ -425,22 +466,12 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-medical-blue)' }}>{t('nav.services')}</span>
             <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {servicesLinks.map((item, idx) => (
-                <Link key={idx} to={item.path} style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{item.title}</Link>
-              ))}
+              <Link to="/services" style={{ textDecoration: 'none', color: 'var(--color-medical-blue)', fontWeight: 700, fontSize: '1rem' }}>{t('nav.jasa')} →</Link>
+              <Link to="/products" style={{ textDecoration: 'none', color: 'var(--color-cyan)', fontWeight: 700, fontSize: '1rem' }}>{t('nav.produk')} →</Link>
+              <Link to="/rentals" style={{ textDecoration: 'none', color: 'var(--color-medical-blue)', fontWeight: 700, fontSize: '1rem' }}>{t('nav.sewa')} →</Link>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-cyan)' }}>{t('nav.products')}</span>
-            <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {productsLinks.map((item, idx) => (
-                <Link key={idx} to={item.path} style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{item.title}</Link>
-              ))}
-            </div>
-          </div>
-
-          <Link to="/projects" className="mobile-link" style={mobileLinkStyle}>{t('nav.projects')}</Link>
           <Link to="/gallery" className="mobile-link" style={mobileLinkStyle}>{t('nav.gallery')}</Link>
           <Link to="/contact" className="mobile-link" style={mobileLinkStyle}>{t('nav.contact')}</Link>
         </div>
@@ -478,16 +509,6 @@ const mobileLinkStyle: React.CSSProperties = {
   fontWeight: 700,
   fontSize: '1.25rem',
   color: 'var(--text-primary)',
-};
-
-const megaMenuStyle: React.CSSProperties = {
-  position: 'absolute',
-  top: 'calc(100% - 2px)',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  padding: '1.5rem',
-  display: 'block',
-  zIndex: 9999,
 };
 
 
