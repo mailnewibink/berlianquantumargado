@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MessageSquare, Info, ShieldAlert } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { ImageSlider } from '../components/ImageSlider';
 
 interface Product {
   id: string;
@@ -12,6 +13,7 @@ interface Product {
   specs: string;
   desc: string;
   image: string;
+  images?: string[];
 }
 
 export const Products: React.FC = () => {
@@ -282,11 +284,11 @@ export const Products: React.FC = () => {
                     className="glass-card"
                     style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
                   >
-                    <div style={{ height: '220px', borderRadius: '12px 12px 0 0', overflow: 'hidden' }}>
-                      <img
-                        src={prod.image}
+                    <div style={{ borderRadius: '12px 12px 0 0', overflow: 'hidden' }}>
+                      <ImageSlider
+                        images={prod.images || [prod.image]}
                         alt={prod.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        height="220px"
                       />
                     </div>
                     <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1, gap: '0.75rem' }}>
@@ -445,6 +447,14 @@ export const Products: React.FC = () => {
               >
                 Category: {selectedProduct.category}
               </span>
+
+              <div style={{ borderRadius: '12px', overflow: 'hidden', marginBottom: '1.5rem' }}>
+                <ImageSlider
+                  images={selectedProduct.images || [selectedProduct.image]}
+                  alt={selectedProduct.name}
+                  height="240px"
+                />
+              </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div>

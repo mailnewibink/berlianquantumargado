@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Clock, ShieldCheck, CheckCircle2, MessageSquare } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { ImageSlider } from '../components/ImageSlider';
 
 interface RentalItem {
   id: string;
@@ -13,6 +14,7 @@ interface RentalItem {
   availability: string;
   terms: string;
   image: string;
+  images?: string[];
 }
 
 export const Rentals: React.FC = () => {
@@ -186,12 +188,16 @@ export const Rentals: React.FC = () => {
                 }}
               >
                 <div style={{ height: '220px', backgroundColor: 'var(--bg-secondary)', overflow: 'hidden', position: 'relative' }}>
-                  <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <ImageSlider
+                    images={item.images || [item.image]}
+                    alt={item.title}
+                    height="220px"
+                  />
                   <span style={{
                     position: 'absolute', top: '1rem', right: '1rem',
                     backgroundColor: 'rgba(14, 165, 233, 0.9)', color: '#FFF',
                     fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.8rem',
-                    borderRadius: '20px', backdropFilter: 'blur(4px)'
+                    borderRadius: '20px', backdropFilter: 'blur(4px)', zIndex: 10
                   }}>
                     {item.category}
                   </span>

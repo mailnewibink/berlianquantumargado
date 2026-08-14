@@ -6,6 +6,7 @@ import { serviceItems as serviceItemsData } from '../content/services';
 import type { IconKey } from '../types/content';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { ImageSlider } from '../components/ImageSlider';
 
 const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
   switch (iconKey) {
@@ -136,18 +137,13 @@ export const Services: React.FC = () => {
                 transition={{ duration: 0.8 }}
                 style={{ flex: '1 1 450px' }}
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  style={{
-                    width: '100%',
-                    height: '350px',
-                    objectFit: 'cover',
-                    borderRadius: '24px',
-                    boxShadow: 'var(--shadow-medium)',
-                    border: '1px solid var(--glass-border)',
-                  }}
-                />
+                <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: 'var(--shadow-medium)', border: '1px solid var(--glass-border)' }}>
+                  <ImageSlider
+                    images={item.images || [item.image]}
+                    alt={item.title}
+                    height="350px"
+                  />
+                </div>
               </motion.div>
 
               {/* Text & Capability Details box */}
