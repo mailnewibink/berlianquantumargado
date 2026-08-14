@@ -88,13 +88,13 @@ export const Home: React.FC = () => {
   ];
 
   const featuredProjects = language === 'id' ? [
-      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703401/ChatGPT_Image_Aug_14_2026_05_24_19_PM_hmaeih.png", title: "CT Scan Canggih & Ruang Radiologi", category: "Pelindung Radiasi", location: "Siloam Hospital, Jakarta" },
-      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703400/ChatGPT_Image_Aug_14_2026_05_26_11_PM_o1ilfz.png", title: "Konstruksi Cath Lab Jantung Hibrida", category: "Konstruksi Rumah Sakit", location: "Rumah Sakit Harapan Kita, Jakarta" },
-      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703441/ChatGPT_Image_Aug_14_2026_05_30_03_PM_laph9m.png", title: "Pengaturan Peralatan Ruang Operasi", category: "Instalasi Medis", location: "RSUD Dr. Soetomo, Surabaya" }
+      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703401/ChatGPT_Image_Aug_14_2026_05_24_19_PM_hmaeih.png", title: "Instalasi & Pemasangan CT Scan", category: "Instalasi Medis", location: "Siloam Hospital, Jakarta" },
+      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703400/ChatGPT_Image_Aug_14_2026_05_26_11_PM_o1ilfz.png", title: "Instalasi & Pemasangan HandRail", category: "Konstruksi Rumah Sakit", location: "Rumah Sakit Harapan Kita, Jakarta" },
+      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703441/ChatGPT_Image_Aug_14_2026_05_30_03_PM_laph9m.png", title: "Pemasangan Hermetic Door with Foot Sensor Radiologi Anti Radiasi", category: "Pelindung Radiasi", location: "RSUD Dr. Soetomo, Surabaya" }
     ] : [
-      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703401/ChatGPT_Image_Aug_14_2026_05_24_19_PM_hmaeih.png", title: "Advanced CT Scan & Radiology Room", category: "Radiation Shielding", location: "Siloam Hospital, Jakarta" },
-      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703400/ChatGPT_Image_Aug_14_2026_05_26_11_PM_o1ilfz.png", title: "Hybrid Cardiac Cath Lab Construction", category: "Hospital Construction", location: "Rumah Sakit Harapan Kita, Jakarta" },
-      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703441/ChatGPT_Image_Aug_14_2026_05_30_03_PM_laph9m.png", title: "Operating Theater Equipment Setup", category: "Medical Installation", location: "RSUD Dr. Soetomo, Surabaya" }
+      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703401/ChatGPT_Image_Aug_14_2026_05_24_19_PM_hmaeih.png", title: "CT Scan Installation & Setup", category: "Medical Installation", location: "Siloam Hospital, Jakarta" },
+      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703400/ChatGPT_Image_Aug_14_2026_05_26_11_PM_o1ilfz.png", title: "HandRail Installation & Mounting", category: "Hospital Construction", location: "Rumah Sakit Harapan Kita, Jakarta" },
+      { image: "https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703441/ChatGPT_Image_Aug_14_2026_05_30_03_PM_laph9m.png", title: "Hermetic Door Installation with Foot Sensor Radiation Shielding", category: "Radiation Shielding", location: "RSUD Dr. Soetomo, Surabaya" }
     ];
 
   const chooseUsCards = language === 'id' ? [
