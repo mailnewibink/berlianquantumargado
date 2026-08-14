@@ -4,7 +4,7 @@
  * hardcoding URL strings.
  */
 export const images = {
-  heroBackground: '/images/hero_background.png',
+  heroBackground: 'https://res.cloudinary.com/dvy4znkvy/image/upload/v1786703403/ChatGPT_Image_Aug_14_2026_05_21_33_PM_bctfgy.png',
   hospitalConstruction: '/images/hospital_construction.png',
   radiationShielding: '/images/radiation_shielding.png',
   medicalEquipment: '/images/medical_equipment.png',
