@@ -18,11 +18,50 @@ export const Gallery: React.FC = () => {
 
   useEffect(() => {
     const fetchDbGallery = async () => {
-      if (!isSupabaseConfigured()) return;
+      if (!isSupabaseConfigured()) {
+        const local = localStorage.getItem('dummy_gallery');
+        if (local) {
+          try {
+            const parsed = JSON.parse(local);
+            const mapped = parsed.filter((p: any) => p.status === 'Published').map((p: any) => ({
+              url: p.asset?.public_url || '/images/hero_background.png',
+              title: p.title || p.asset?.title || 'Gallery Image',
+              category: p.category || 'Gallery'
+            }));
+            if (mapped.length > 0) setDbGallery(mapped);
+          } catch (e) {}
+        }
+        return;
+      }
       try {
-        const { data, error } = await supabase.from('gallery_items').select('*, asset:assets(*)').eq('status', 'Published').order('sort_order', { ascending: true });
-        if (!error && data) {
-          const mapped = data.map((p: any) => ({
+        let galleryData: any[] = [];
+        let { data, error } = await supabase
+          .from('gallery_items')
+          .select('*, asset:assets!gallery_items_asset_id_fkey(*)')
+          .eq('status', 'Published')
+          .order('sort_order', { ascending: true });
+
+        if (error) {
+          console.warn("PGRST201 fallback in public Gallery.tsx:", error);
+          const res = await supabase.from('gallery_items').select('*').eq('status', 'Published').order('sort_order', { ascending: true });
+          if (res.data) {
+            galleryData = res.data as any[];
+            const assetIds = galleryData.map((g: any) => g.asset_id).filter(Boolean);
+            if (assetIds.length > 0) {
+              const { data: assetsData } = await (supabase.from('assets') as any).select('id, public_url, title').in('id', assetIds);
+              const assetMap = new Map(((assetsData || []) as any[]).map((a: any) => [a.id, a]));
+              galleryData = galleryData.map((g: any) => ({
+                ...g,
+                asset: assetMap.get(g.asset_id)
+              }));
+            }
+          }
+        } else {
+          galleryData = (data || []) as any[];
+        }
+
+        if (galleryData.length > 0) {
+          const mapped = galleryData.map((p: any) => ({
             url: p.asset?.public_url || '/images/hero_background.png',
             title: p.title || p.asset?.title || 'Gallery Image',
             category: p.category || 'Gallery'

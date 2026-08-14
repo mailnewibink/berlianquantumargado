@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Shield, Activity, Hammer, Settings, Sofa, CheckCircle2, Award, Users, Globe, ChevronDown } from 'lucide-react';
+import { ArrowRight, Shield, Activity, Hammer, Settings, Sofa, CheckCircle2, Users, Globe, ChevronDown } from 'lucide-react';
 import { InteractiveCard } from '../components/InteractiveCard';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -98,12 +98,10 @@ export const Home: React.FC = () => {
     ];
 
   const chooseUsCards = language === 'id' ? [
-      { icon: <Award size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Kualitas Tersertifikasi", desc: "Kesesuaian penuh dengan izin ISO 9001, ISO 13485 (Alat Kesehatan), dan badan pengawas nuklir (BAPETEN)." },
       { icon: <Users size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Tim Profesional", desc: "Dikelola oleh petugas proteksi radiasi (PPR) bersertifikat, spesialis mekanikal/elektrikal, dan perencana ruang klinis." },
       { icon: <Globe size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Layanan Nasional", desc: "Implementasi proyek yang sukses di seluruh pulau-pulau besar di Indonesia, dari Sumatera hingga Papua." },
       { icon: <Activity size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Keunggulan Rekayasa", desc: "Menggabungkan keselamatan struktural fisik dengan tata letak klinis yang mengoptimalkan alur kerja medis dan pengendalian infeksi." }
     ] : [
-      { icon: <Award size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Certified Quality", desc: "Full conformance with ISO 9001, ISO 13485 (Medical Devices), and nuclear regulatory body (BAPETEN) permissions." },
       { icon: <Users size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Professional Team", desc: "Staffed by certified radiation protection officers (PPR), mechanical/electrical specialists, and clinical space planners." },
       { icon: <Globe size={36} style={{ color: 'var(--color-medical-blue)' }} />, title: "Nationwide Service", desc: "Successful project implementation across major islands of Indonesia, from Sumatra to Papua." },
       { icon: <Activity size={36} style={{ color: 'var(--color-cyan)' }} />, title: "Engineering Excellence", desc: "Combining physical structural safety with clinical layouts that optimize medical workflows and infection control." }

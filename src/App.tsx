@@ -28,6 +28,7 @@ import { AdminProducts } from './pages/admin/Products';
 import { AdminGallery } from './pages/admin/GalleryManager';
 import { AdminServices } from './pages/admin/Services';
 import { AdminRentals } from './pages/admin/Rentals';
+import { AdminSettings } from './pages/admin/Settings';
 
 // Scroll mitigation component on route change
 const ScrollToTopOnRoute: React.FC = () => {
@@ -94,6 +95,7 @@ const AppRoutes: React.FC<{ darkMode: boolean, toggleDarkMode: () => void }> = (
           <Route path="products" element={<AdminProducts />} />
           <Route path="rentals" element={<AdminRentals />} />
           <Route path="gallery" element={<AdminGallery />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
         {/* Public Routes */}
