@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 
 interface ImageSliderProps {
   images: string[];
@@ -15,10 +15,10 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Use exact provided asset images for the item
+  // Filter exact provided asset images
   const slideList = (images && images.length > 0)
     ? images.filter(img => img && typeof img === 'string' && img.trim() !== '')
-    : ['/images/hospital_construction.png'];
+    : [];
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,6 +37,28 @@ export const ImageSlider: React.FC<ImageSliderProps> = ({
     e.preventDefault();
     setCurrentIndex(index);
   };
+
+  if (slideList.length === 0) {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: height,
+          backgroundColor: 'var(--bg-secondary)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--text-muted)',
+          gap: '0.5rem',
+          borderBottom: '1px solid var(--glass-border)',
+        }}
+      >
+        <ImageIcon size={32} opacity={0.4} />
+        <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Foto Belum Tersedia</span>
+      </div>
+    );
+  }
 
   return (
     <div

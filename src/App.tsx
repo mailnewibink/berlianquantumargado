@@ -7,6 +7,7 @@ import { CursorGlow } from './components/CursorGlow';
 import { LoadingScreen } from './components/LoadingScreen';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { ScrollToTop } from './components/ScrollToTop';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { LanguageProvider } from './contexts/LanguageContext';
 
 // Page Components
@@ -76,6 +77,7 @@ const PublicLayout: React.FC<{ children: React.ReactNode, darkMode: boolean, tog
     </main>
     <Footer />
     <FloatingWhatsApp />
+    <MobileBottomNav />
     <ScrollToTop />
   </>
 );

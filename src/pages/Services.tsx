@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Hammer, Activity, Sofa, Settings, CheckCircle } from 'lucide-react';
-import { images } from '../content/assets';
 import { serviceItems as serviceItemsData } from '../content/services';
 import type { IconKey } from '../types/content';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -25,15 +24,6 @@ const getServiceIcon = (iconKey: IconKey): React.ReactNode => {
     default:
       return <Shield size={28} />;
   }
-};
-
-const serviceImagesMap: { [key: string]: string[] } = {
-  radiation: ['/images/radiation_shielding.png', '/images/hospital_construction.png'],
-  construction: ['/images/hospital_construction.png', '/images/hero_background.png'],
-  hvac: ['/images/pass_box.png', '/images/scrub_sink.png'],
-  furniture: ['/images/scrub_sink.png', '/images/medical_equipment.png'],
-  installation: ['/images/medical_equipment.png', '/images/radiation_shielding.png'],
-  maintenance: ['/images/radiation_shielding.png', '/images/pass_box.png'],
 };
 
 export const Services: React.FC = () => {
@@ -88,12 +78,11 @@ export const Services: React.FC = () => {
               : [];
             
             const imageList = Array.from(new Set([coverUrl, ...galleryUrls].filter(Boolean) as string[]));
-            const fallbackList = serviceImagesMap[s.slug || s.id] || [coverUrl || '/images/hero_background.png'];
 
             return {
               id: s.slug || s.id,
-              image: coverUrl || '/images/hero_background.png',
-              images: imageList.length > 0 ? imageList : fallbackList,
+              image: coverUrl || '',
+              images: imageList,
               icon: <CheckCircle size={28} />,
               title: s.title,
               desc: s.description || s.short_description || '',
@@ -109,8 +98,8 @@ export const Services: React.FC = () => {
 
   const staticServiceItems = serviceItemsData.map((item, index) => ({
     id: item.id,
-    image: images[item.imageKey],
-    images: serviceImagesMap[item.id] || [images[item.imageKey]],
+    image: '',
+    images: [],
     icon: getServiceIcon(item.iconKey),
     title: t(`servicesPage.services.${index}.title`),
     desc: t(`servicesPage.services.${index}.desc`),

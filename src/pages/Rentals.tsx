@@ -78,8 +78,8 @@ export const Rentals: React.FC = () => {
               desc: r.description || r.short_description || '',
               availability: r.availability_status || 'AVAILABLE',
               terms: r.rental_terms || 'Harian / Mingguan / Bulanan',
-              image: coverUrl || '/images/medical_equipment.png',
-              images: imageList.length > 0 ? imageList : undefined
+              image: coverUrl || '',
+              images: imageList
             };
           });
           setDbRentals(mapped);
@@ -98,8 +98,8 @@ export const Rentals: React.FC = () => {
       desc: "Perangkat survey meter portabel certified untuk inspeksi kebocoran radiasi di ruang CT Scan, X-Ray, dan Cath Lab.",
       availability: "Tersedia",
       terms: "Sewa Harian / Mingguan",
-      image: "/images/radiation_shielding.png",
-      images: ["/images/radiation_shielding.png", "/images/medical_equipment.png"]
+      image: "",
+      images: []
     },
     {
       id: "r-2",
@@ -109,8 +109,8 @@ export const Rentals: React.FC = () => {
       desc: "Mobile scrub sink siap pakai dengan sistem air steril terintegrasi untuk kebutuhan instalasi darurat atau renovasi kamar ruang operasi.",
       availability: "Tersedia",
       terms: "Sewa Bulanan / Proyek",
-      image: "/images/scrub_sink.png",
-      images: ["/images/scrub_sink.png", "/images/hospital_construction.png"]
+      image: "",
+      images: []
     },
     {
       id: "r-3",
@@ -120,8 +120,8 @@ export const Rentals: React.FC = () => {
       desc: "Unit pemurni udara laminar bergerak untuk menciptakan zona steril sementara selama pengerjaan konstruksi atau perawatan ruang medis.",
       availability: "Tersedia",
       terms: "Sewa Mingguan / Bulanan",
-      image: "/images/pass_box.png",
-      images: ["/images/pass_box.png", "/images/radiation_shielding.png"]
+      image: "",
+      images: []
     }
   ] : [
     {
@@ -132,8 +132,8 @@ export const Rentals: React.FC = () => {
       desc: "Certified portable survey meter for inspecting radiation shielding integrity in CT Scan and X-Ray suites.",
       availability: "Available",
       terms: "Daily / Weekly Rental",
-      image: "/images/radiation_shielding.png",
-      images: ["/images/radiation_shielding.png", "/images/medical_equipment.png"]
+      image: "",
+      images: []
     },
     {
       id: "r-2",
@@ -143,8 +143,8 @@ export const Rentals: React.FC = () => {
       desc: "Plug-and-play mobile scrub station with sterile water system for temporary operating suite setups.",
       availability: "Available",
       terms: "Monthly / Project Rental",
-      image: "/images/scrub_sink.png",
-      images: ["/images/scrub_sink.png", "/images/hospital_construction.png"]
+      image: "",
+      images: []
     },
     {
       id: "r-3",
@@ -154,8 +154,8 @@ export const Rentals: React.FC = () => {
       desc: "Mobile laminar airflow purification unit to establish temporary sterile clean zones during facility maintenance.",
       availability: "Available",
       terms: "Weekly / Monthly Rental",
-      image: "/images/pass_box.png",
-      images: ["/images/pass_box.png", "/images/radiation_shielding.png"]
+      image: "",
+      images: []
     }
   ];
 

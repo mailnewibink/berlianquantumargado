@@ -447,33 +447,104 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
         <div
           className="glass-panel"
           style={{
-            position: 'absolute',
+            position: 'fixed',
             top: '80px',
             left: 0,
             width: '100%',
             height: 'calc(100vh - 80px)',
-            padding: '2rem 1.25rem',
+            padding: '1.5rem 1.25rem 3rem 1.25rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.5rem',
+            gap: '0.85rem',
             overflowY: 'auto',
-            borderTop: 'none',
+            backgroundColor: 'var(--bg-primary)',
+            zIndex: 9998,
+            boxSizing: 'border-box',
           }}
         >
-          <Link to="/" className="mobile-link" style={mobileLinkStyle}>{t('nav.home')}</Link>
-          <Link to="/about" className="mobile-link" style={mobileLinkStyle}>{t('nav.about')}</Link>
+          <Link 
+            to="/" 
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.05rem', padding: '0.85rem 1rem', borderRadius: '12px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span>🏠 {t('nav.home')}</span>
+            <span style={{ color: 'var(--text-muted)' }}>→</span>
+          </Link>
+
+          <Link 
+            to="/about" 
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.05rem', padding: '0.85rem 1rem', borderRadius: '12px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span>🏢 {t('nav.about')}</span>
+            <span style={{ color: 'var(--text-muted)' }}>→</span>
+          </Link>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--color-medical-blue)' }}>{t('nav.services')}</span>
-            <div style={{ paddingLeft: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link to="/services" style={{ textDecoration: 'none', color: 'var(--color-medical-blue)', fontWeight: 700, fontSize: '1rem' }}>{t('nav.jasa')} →</Link>
-              <Link to="/products" style={{ textDecoration: 'none', color: 'var(--color-cyan)', fontWeight: 700, fontSize: '1rem' }}>{t('nav.produk')} →</Link>
-              <Link to="/rentals" style={{ textDecoration: 'none', color: 'var(--color-medical-blue)', fontWeight: 700, fontSize: '1rem' }}>{t('nav.sewa')} →</Link>
+          {/* Layanan Section Container */}
+          <div style={{ backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <span style={{ fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-medical-blue)' }}>
+              📋 {t('nav.services')}
+            </span>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <Link 
+                to="/services" 
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem', padding: '0.65rem 0.85rem', borderRadius: '8px', backgroundColor: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
+                <span>🛠️ {t('nav.jasa')}</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--color-medical-blue)', fontWeight: 600 }}>Jelajahi →</span>
+              </Link>
+              
+              <Link 
+                to="/products" 
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem', padding: '0.65rem 0.85rem', borderRadius: '8px', backgroundColor: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
+                <span>📦 {t('nav.produk')}</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--color-cyan)', fontWeight: 600 }}>Katalog →</span>
+              </Link>
+              
+              <Link 
+                to="/rentals" 
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem', padding: '0.65rem 0.85rem', borderRadius: '8px', backgroundColor: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
+                <span>🤝 {t('nav.sewa')}</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--color-medical-blue)', fontWeight: 600 }}>Sewa Alat →</span>
+              </Link>
             </div>
           </div>
 
-          <Link to="/gallery" className="mobile-link" style={mobileLinkStyle}>{t('nav.gallery')}</Link>
-          <Link to="/contact" className="mobile-link" style={mobileLinkStyle}>{t('nav.contact')}</Link>
+          <Link 
+            to="/gallery" 
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.05rem', padding: '0.85rem 1rem', borderRadius: '12px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span>🖼️ {t('nav.gallery')}</span>
+            <span style={{ color: 'var(--text-muted)' }}>→</span>
+          </Link>
+
+          <Link 
+            to="/contact" 
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ textDecoration: 'none', color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.05rem', padding: '0.85rem 1rem', borderRadius: '12px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span>📞 {t('nav.contact')}</span>
+            <span style={{ color: 'var(--text-muted)' }}>→</span>
+          </Link>
+
+          <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+            <a 
+              href="https://wa.me/6281234567890?text=Halo%20PT%20Berlian%20Quantum%20Argado,%20saya%20ingin%20konsultasi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+              style={{ width: '100%', justifyContent: 'center', padding: '0.85rem', textDecoration: 'none' }}
+            >
+              💬 Konsultasi via WhatsApp
+            </a>
+          </div>
         </div>
       )}
 
@@ -502,13 +573,5 @@ export const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
 const navLinkStyle = (active: boolean) => ({
   color: active ? 'var(--color-medical-blue)' : 'var(--text-primary)',
 });
-
-const mobileLinkStyle: React.CSSProperties = {
-  textDecoration: 'none',
-  fontFamily: 'Manrope',
-  fontWeight: 700,
-  fontSize: '1.25rem',
-  color: 'var(--text-primary)',
-};
 
 
