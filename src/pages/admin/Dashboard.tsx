@@ -22,17 +22,18 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const [projectsRes, productsRes, servicesRes] = await Promise.all([
+      const [projectsRes, productsRes, servicesRes, rentalsRes] = await Promise.all([
         supabase.from('projects').select('id', { count: 'exact' }),
         supabase.from('products').select('id', { count: 'exact' }),
-        supabase.from('services').select('id', { count: 'exact' })
+        supabase.from('services').select('id', { count: 'exact' }),
+        supabase.from('rentals').select('id', { count: 'exact' })
       ]);
 
       setStats({
         projects: projectsRes.count || 0,
         products: productsRes.count || 0,
         services: servicesRes.count || 0,
-        rentals: 0
+        rentals: rentalsRes.count || 0
       });
     } catch (e) {
       console.error("Error fetching stats", e);
